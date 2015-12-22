@@ -48,45 +48,10 @@
         <aspectj.version>1.8.7</aspectj.version>
         <shiro.version>1.2.4</shiro.version>
         <jackson.version>2.6.2</jackson.version>
-        <jetty.version>8.1.17.v20150415</jetty.version>
-        <mysql.connector.version>5.1.36</mysql.connector.version>
-        <freemarker.version>2.3.23</freemarker.version>
-        <ehcache.version>2.6.11</ehcache.version>
-        <framework.extension.version>1.0.0-SNAPSHOT</framework.extension.version>
 	</properties>
 	
 	<dependencyManagement>
 		<dependencies>
-
-            <dependency>
-                <groupId>com.github.dactiv.fe</groupId>
-                <artifactId>map-validation</artifactId>
-                <version>${framework.extension.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.dactiv.fe</groupId>
-                <artifactId>sso-server</artifactId>
-                <version>${framework.extension.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.dactiv.fe</groupId>
-                <artifactId>sso-client</artifactId>
-                <version>${framework.extension.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.dactiv.fe</groupId>
-                <artifactId>shiro-extension</artifactId>
-                <version>${framework.extension.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.dactiv.fe</groupId>
-                <artifactId>spring-mvc-extension</artifactId>
-                <version>${framework.extension.version}</version>
-            </dependency>
 
 			<!-- log begin -->
 			<dependency>
@@ -107,20 +72,6 @@
 				<version>${slf4j.version}</version>
 			</dependency>
 			<!-- log end -->
-
-            <!-- ehcache begin -->
-            <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache-core</artifactId>
-                <version>${ehcache.version}</version>
-            </dependency>
-
-            <!-- html template engine -->
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${freemarker.version}</version>
-            </dependency>
 
             <!-- mysql driver -->
             <dependency>
@@ -173,12 +124,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjrt</artifactId>
                 <version>${aspectj.version}</version>
@@ -201,17 +146,6 @@
             <dependency>
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-web</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-spring</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-ehcache</artifactId>
                 <version>${shiro.version}</version>
             </dependency>
             <!-- shiro security end -->
@@ -320,13 +254,6 @@
 
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>3.0.1</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>1.2</version>
             </dependency>
@@ -397,65 +324,6 @@
                 <version>2.4.9</version>
                 <scope>test</scope>
             </dependency>
-
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- jetty -->
-            <dependency>
-                <groupId>org.eclipse.jetty.aggregate</groupId>
-                <artifactId>jetty-webapp</artifactId>
-                <version>${jetty.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jsp</artifactId>
-                <version>${jetty.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-start</artifactId>
-                <version>${jetty.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.seleniumhq.selenium</groupId>
-                <artifactId>selenium-java</artifactId>
-                <version>2.47.2</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.seleniumhq.selenium</groupId>
-                        <artifactId>selenium-android-driver</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.seleniumhq.selenium</groupId>
-                        <artifactId>selenium-iphone-driver</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.seleniumhq.selenium</groupId>
-                        <artifactId>selenium-htmlunit-driver</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.seleniumhq.selenium</groupId>
-                        <artifactId>selenium-safari-driver</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-			<!-- test end -->
 
 		</dependencies>
 	</dependencyManagement>
