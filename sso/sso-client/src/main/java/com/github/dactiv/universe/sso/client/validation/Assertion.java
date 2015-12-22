@@ -2,6 +2,7 @@ package com.github.dactiv.universe.sso.client.validation;
 
 import com.github.dactiv.universe.sso.client.authentication.AttributePrincipal;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import java.util.Map;
  *
  * @author maurice
  */
-public interface Assertion {
+public interface Assertion extends Serializable{
 
     /**
      * 获取断言有效时间
