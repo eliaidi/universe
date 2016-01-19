@@ -80,14 +80,14 @@ public class JpegImgCaptchaGenerator implements CaptchaGenerator {
         Random random = new Random();
         Graphics g = image.getGraphics();
         g.setColor(getRandColor(200, 250));
-        g.fillRect(1, 1, imageHeight - 1, imageHeight - 1);
+        g.fillRect(1, 1, imageWidth - 1, imageHeight - 1);
         g.setColor(new Color(102, 102, 103));
-        g.drawRect(0, 0, imageHeight - 1, imageHeight - 1);
+        g.drawRect(0, 0, imageWidth - 1, imageHeight - 1);
         g.setFont(font);
         // 随机生成线条，让图片看起来更加杂乱
         g.setColor(getRandColor(160, 200));
         for (int i = 0; i < 155; i++) {
-            int x = random.nextInt(imageHeight - 1);
+            int x = random.nextInt(imageWidth - 1);
             int y = random.nextInt(imageHeight - 1);
             int x1 = random.nextInt(6) + 1;
             int y1 = random.nextInt(12) + 1;
