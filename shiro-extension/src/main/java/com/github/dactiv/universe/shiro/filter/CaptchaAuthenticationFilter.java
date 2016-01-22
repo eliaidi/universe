@@ -243,7 +243,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
     @Override
     public void afterPropertiesSet() throws Exception {
         if(sessionCaptchaManager == null) {
-            SessionCaptchaManager sessionCaptchaManager = new SessionCaptchaManager();
+            sessionCaptchaManager = new SessionCaptchaManager();
             sessionCaptchaManager.setCaptchaGenerator(new JpegImgCaptchaGenerator());
             sessionCaptchaManager.setExpiredTime(captchaTimeout);
         }
