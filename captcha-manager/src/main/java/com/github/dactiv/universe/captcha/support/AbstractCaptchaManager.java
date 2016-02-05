@@ -126,16 +126,12 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
 
             Captcha captcha = get(id);
 
-            if (captcha == null) {
-                throw new CaptchaException("找不到验证码");
-            }
-
-            if (!captcha.getCode().equals(code.toUpperCase())) {
-                throw new CaptchaException("验证码不正确");
-            }
-
-            if (System.currentTimeMillis() - captcha.getCreationTime().getTime() > expiredTime) {
+            if (captcha == null || System.currentTimeMillis() - captcha.getCreationTime().getTime() > expiredTime) {
                 throw new CaptchaException("验证码超时");
+            }
+
+            if (code == null || !captcha.getCode().equals(code.toUpperCase()) ) {
+                throw new CaptchaException("验证码不正确");
             }
 
             delete(id);

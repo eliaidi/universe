@@ -45,15 +45,15 @@ public class JpegImgCaptchaGenerator implements CaptchaGenerator {
     /**
      * 默认验证码图片宽度
      */
-    public static final Integer DEFAULT_IMAGE_WIDTH = 70;
+    public static final Integer DEFAULT_IMAGE_WIDTH = 96;
     /**
      * 默认验证码图片高度
      */
-    public static final Integer DEFAULT_IMAGE_HEIGHT = 32;
+    public static final Integer DEFAULT_IMAGE_HEIGHT = 46;
     /**
      * 验证码字符长度
      */
-    public static final Integer DEFAULT_CODE_LENGTH = 4;
+    public static final Integer DEFAULT_CODE_LENGTH = 6;
     /** 验证码字体 */
     private String fontFamily = DEFAULT_FONT_FAMILY;
     /** 字体大小 */

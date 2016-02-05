@@ -18,8 +18,8 @@ package com.github.dactiv.universe.shiro.filter;
 
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.entity.support.FailureValidResult;
-import com.github.dactiv.universe.captcha.exception.CaptchaException;
 import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
+import com.github.dactiv.universe.shiro.exception.CaptchaException;
 import com.github.dactiv.universe.shiro.filter.captcha.DisplayCaptchaCondition;
 import com.github.dactiv.universe.shiro.filter.captcha.SessionCaptchaManager;
 import com.github.dactiv.universe.shiro.filter.captcha.support.SimpleDisplayCaptchaCondition;
@@ -52,14 +52,10 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
     /**
      * 默认验证码的超时时间
      */
-    private static final long DEFAULT_CAPTCHA_TIMEOUT_VALUE = 1000 * 60;
+    private static final long DEFAULT_CAPTCHA_EXPIRED_TIME = 1000 * 60;
 
     // 验证码参数名称
     private String captchaParam = DEFAULT_CAPTCHA_PARAM;
-    // 在 session 中存储验证码的 key 名称
-    private String sessionCaptchaKeyAttribute = DEFAULT_CAPTCHA_PARAM;
-    // 验证码超时时间
-    private long captchaTimeout = DEFAULT_CAPTCHA_TIMEOUT_VALUE;
     // 显示验证码条件
     private List<DisplayCaptchaCondition> displayCaptchaConditions = new ArrayList<DisplayCaptchaCondition>();
     // session 验证码管理
@@ -105,12 +101,13 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
         Session session = SecurityUtils.getSubject().getSession();
         sessionCaptchaManager.setCurrentSession(session);
         // 获取当前验证码
-        String currentCaptcha = (String) session.getAttribute(getSessionCaptchaKeyAttribute());
+        String currentCaptcha = getCaptcha(request);
 
         ValidResult validResult = sessionCaptchaManager.valid(session.getId().toString(), currentCaptcha);
 
         if (validResult instanceof FailureValidResult) {
-            throw new CaptchaException(validResult.getMessage());
+            AuthenticationToken token = createToken(request, response);
+            return onLoginFailure(token, new CaptchaException(validResult.getMessage()), request, response);
         }
 
         return super.executeLogin(request, response);
@@ -167,24 +164,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
     }
 
     /**
-     * 设置在 session 中的存储验证码的 key 名称
-     *
-     * @param sessionCaptchaKeyAttribute 存储验证码的 key 名称
-     */
-    public void setSessionCaptchaKeyAttribute(String sessionCaptchaKeyAttribute) {
-        this.sessionCaptchaKeyAttribute = sessionCaptchaKeyAttribute;
-    }
-
-    /**
-     * 获取设置在 session 中的存储验证码的 key 名称
-     *
-     * @return key 名称
-     */
-    public String getSessionCaptchaKeyAttribute() {
-        return sessionCaptchaKeyAttribute;
-    }
-
-    /**
      * 获取用户输入的验证码
      *
      * @param request ServletRequest
@@ -193,24 +172,6 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
      */
     public String getCaptcha(ServletRequest request) {
         return WebUtils.getCleanParam(request, getCaptchaParam());
-    }
-
-    /**
-     * 获取验证码超时时间
-     *
-     * @return 以毫秒为单位的时间值
-     */
-    public long getCaptchaTimeout() {
-        return captchaTimeout;
-    }
-
-    /**
-     * 设置验证码超时时间
-     *
-     * @param captchaTimeout 以毫秒为单位的时间值
-     */
-    public void setCaptchaTimeout(long captchaTimeout) {
-        this.captchaTimeout = captchaTimeout;
     }
 
     /**
@@ -245,7 +206,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
         if(sessionCaptchaManager == null) {
             sessionCaptchaManager = new SessionCaptchaManager();
             sessionCaptchaManager.setCaptchaGenerator(new JpegImgCaptchaGenerator());
-            sessionCaptchaManager.setExpiredTime(captchaTimeout);
+            sessionCaptchaManager.setExpiredTime(DEFAULT_CAPTCHA_EXPIRED_TIME);
         }
     }
 }
