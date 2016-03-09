@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+
 package com.github.dactiv.universe.sso.server.validation.support;
 
-import com.github.dactiv.universe.sso.server.validation.entity.support.SimpleValidateInfo;
 import com.github.dactiv.universe.sso.server.exception.TicketNotFoundException;
 import com.github.dactiv.universe.sso.server.exception.UrlTicketValidateException;
 import com.github.dactiv.universe.sso.server.organization.OrganizationManager;
@@ -24,14 +24,12 @@ import com.github.dactiv.universe.sso.server.organization.entity.Organization;
 import com.github.dactiv.universe.sso.server.ticket.TicketManager;
 import com.github.dactiv.universe.sso.server.ticket.entity.support.SimpleAuthenticationTicket;
 import com.github.dactiv.universe.sso.server.validation.TicketValidationManager;
-import com.github.dactiv.universe.sso.server.validation.entity.ValidateInfo;
+import com.github.dactiv.universe.sso.server.validation.entity.ValidateToken;
 import com.github.dactiv.universe.sso.server.validation.policy.AttributeReleasePolicy;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.RememberMeAuthenticationToken;
-import org.apache.shiro.web.util.WebUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,24 +37,19 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- *
- * url 形式的票据验证管理
+ * 抽象票据验证实现
  *
  * @author maurice
  */
-public class UrlTicketValidationManager implements TicketValidationManager {
+public abstract class AbstractTicketValidationManager implements TicketValidationManager{
     /**
      * 票据的参数名称
      */
     public final static String TICKET_PARAM_NAME = "ticket";
     /**
-     * 重定向的 url 参数名称
-     */
-    public final static String REDIRECT_URL_PARAM_NAME = "redirectUrl";
-    /**
      * 用户属性的 key 名称
      */
-    public final static String ATTRIBUTE_KEY_NAME="attributes";
+    public final static String ATTRIBUTE_KEY_NAME = "attributes";
     /**
      * 错误属性的 key 名称
      */
@@ -83,57 +76,59 @@ public class UrlTicketValidationManager implements TicketValidationManager {
     /**
      * 验证票据
      *
-     * @param requestPairSource request
-     * @return 验证结果
+     * @param requestPairSource 请求信息
+     * @return 断言结果
      */
     @Override
     public Map<String, Object> valid(Object requestPairSource) {
 
-        if (WebUtils.isHttp(requestPairSource)) {
-            throw new UrlTicketValidateException("该请求不是 http 请求");
-        }
-        HttpServletRequest request = (HttpServletRequest) requestPairSource;
-        ValidateInfo validateInfo = createValidateInfo(request);
-
         Map<String, Object> result = new HashMap<>();
+        ValidateToken token = createValidToken(requestPairSource);
 
         try {
-            result = valid(validateInfo);
+            result = valid(token);
         } catch (Exception e) {
             result.put(ERROR_ATTRIBUTE_KEY_NAME, e.getMessage());
-            result.put(TICKET_PARAM_NAME, validateInfo.getTicket());
+            result.put(TICKET_PARAM_NAME, token.getTicket());
         }
 
         return result;
     }
 
     /**
+     * 创建验证票据的令牌
+     *
+     * @param requestPairSource 请求信息
+     *
+     * @return 验证令牌
+     */
+    protected abstract ValidateToken createValidToken(Object requestPairSource);
+
+    /**
      * 验证票据
      *
-     * @param validateInfo 验证信息
-     *
-     * @return 验证结果
+     * @param token 验证令牌
+     * @return 断言结果
      */
-    protected Map<String, Object> valid(ValidateInfo validateInfo) {
-
-        SimpleAuthenticationTicket ticket = ticketManager.get(validateInfo.getTicket(), SimpleAuthenticationTicket.class);
+    protected Map<String, Object> valid(ValidateToken token) {
+        SimpleAuthenticationTicket ticket = ticketManager.get(token.getTicket(), SimpleAuthenticationTicket.class);
 
         if (ticket == null) {
-            throw new TicketNotFoundException("找不到 " + validateInfo.getTicket() + " 票据");
+            throw new TicketNotFoundException("找不到 " + token.getTicket() + " 票据");
         }
 
-        Organization organization = organizationManager.getByWildcard(validateInfo.getRedirectUrl());
+        Organization organization = organizationManager.getByWildcard(token.getRedirectUrl());
 
         lock.lock();
 
         try {
 
             if (ticket.isExpired()) {
-                throw new UrlTicketValidateException(validateInfo.getTicket() + " 票据超时");
+                throw new UrlTicketValidateException(token.getTicket() + " 票据超时");
             }
 
             if (!StringUtils.equals(ticket.getOrganization().getWildcard(), organization.getWildcard())) {
-                throw new UrlTicketValidateException(validateInfo.getTicket() + " 票据的机构匹配");
+                throw new UrlTicketValidateException(token.getTicket() + " 票据的机构匹配");
             }
 
         } finally {
@@ -156,26 +151,11 @@ public class UrlTicketValidationManager implements TicketValidationManager {
         result.put(ATTRIBUTE_KEY_NAME, attributes);
 
         if (authenticationToken instanceof RememberMeAuthenticationToken) {
-            RememberMeAuthenticationToken token = (RememberMeAuthenticationToken)authenticationToken;
-            result.put(rememberMeAttributeKeyName, token.isRememberMe());
+            RememberMeAuthenticationToken t = (RememberMeAuthenticationToken)authenticationToken;
+            result.put(rememberMeAttributeKeyName, t.isRememberMe());
         }
 
         return result;
-    }
-
-    /**
-     * 创建验证信息
-     *
-     * @param request http servlet request 对象
-     *
-     * @return 验证信息
-     */
-    protected ValidateInfo createValidateInfo(HttpServletRequest request) {
-
-        String ticket = WebUtils.getCleanParam(request, TICKET_PARAM_NAME);
-        String redirectUrl = WebUtils.getCleanParam(request, REDIRECT_URL_PARAM_NAME);
-
-        return new SimpleValidateInfo(ticket, redirectUrl);
     }
 
     /**

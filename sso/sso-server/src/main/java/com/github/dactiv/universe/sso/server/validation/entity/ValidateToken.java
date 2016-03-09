@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+
 package com.github.dactiv.universe.sso.server.validation.entity;
 
 /**
- * 验证信息
+ * 验证票据的令牌实体接口
  *
  * @author maurice
  */
-public interface ValidateInfo {
+public interface ValidateToken {
 
     /**
      * 获取票据 id

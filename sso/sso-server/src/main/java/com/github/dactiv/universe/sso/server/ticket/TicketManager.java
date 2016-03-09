@@ -26,7 +26,7 @@ import org.apache.shiro.authc.AuthenticationToken;
  *
  * @author maurice
  */
-public interface TicketManager extends TicketValidationManager {
+public interface TicketManager{
 
     /**
      * 生成一个新的票据

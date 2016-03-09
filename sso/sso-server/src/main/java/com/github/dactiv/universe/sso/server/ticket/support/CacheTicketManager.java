@@ -3,7 +3,7 @@ package com.github.dactiv.universe.sso.server.ticket.support;
 import com.github.dactiv.universe.sso.server.ticket.generator.NumericGenerator;
 import com.github.dactiv.universe.sso.server.ticket.generator.RandomStringGenerator;
 import com.github.dactiv.universe.sso.server.ticket.generator.support.SimpleNumericGenerator;
-import com.github.dactiv.universe.sso.server.validation.support.UrlTicketValidationManager;
+import com.github.dactiv.universe.sso.server.validation.support.HttpRequestValidationManager;
 import com.github.dactiv.universe.sso.server.organization.OrganizationManager;
 import com.github.dactiv.universe.sso.server.organization.entity.Organization;
 import com.github.dactiv.universe.sso.server.ticket.TicketManager;
@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author maurice
  */
-public class CacheTicketManager implements TicketManager, InitializingBean {
+public class CacheTicketManager implements TicketManager, TicketValidationManager, InitializingBean {
     /**
      * 默认票据缓存名称
      */
@@ -108,6 +108,11 @@ public class CacheTicketManager implements TicketManager, InitializingBean {
         getTicketCache().remove(id);
     }
 
+    /**
+     * 获取票据缓存块
+     *
+     * @return 缓存块
+     */
     private Cache<Object, Ticket> getTicketCache() {
         return cacheManager.getCache(ticketCacheName);
     }
@@ -187,11 +192,11 @@ public class CacheTicketManager implements TicketManager, InitializingBean {
     public void afterPropertiesSet() throws Exception {
         if (this.ticketValidationManager == null) {
 
-            UrlTicketValidationManager urlTicketValidationManager = new UrlTicketValidationManager();
-            urlTicketValidationManager.setOrganizationManager(organizationManager);
-            urlTicketValidationManager.setTicketManager(this);
+            HttpRequestValidationManager requestValidationManager = new HttpRequestValidationManager();
+            requestValidationManager.setOrganizationManager(organizationManager);
+            requestValidationManager.setTicketManager(this);
 
-            ticketValidationManager = urlTicketValidationManager;
+            ticketValidationManager = requestValidationManager;
         }
 
         if (this.numericGenerator == null) {

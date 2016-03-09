@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
+
 package com.github.dactiv.universe.sso.server.validation.entity.support;
 
-import com.github.dactiv.universe.sso.server.validation.entity.ValidateInfo;
+import com.github.dactiv.universe.sso.server.validation.entity.ValidateToken;
 
 /**
- * 简单的验证信息实现
+ *
+ * 简单的验证票据令牌接口实现
  *
  * @author maurice
  */
-public class SimpleValidateInfo implements ValidateInfo {
+public class SimpleValidateToken implements ValidateToken {
 
+    // 票据信息
     private String ticket;
+    // 重定向的 url
     private String redirectUrl;
 
     /**
-     * 简单的验证信息实现
-     */
-    public SimpleValidateInfo() {
-    }
-
-    /**
-     * 简单的验证信息实现
+     * 简单的验证票据令牌接口实现
      *
-     * @param ticket      票据 id
-     * @param redirectUrl 机构信息
+     * @param ticket      票据信息
+     * @param redirectUrl 重定向的 url
      */
-    public SimpleValidateInfo(String ticket, String redirectUrl) {
+    public SimpleValidateToken(String ticket, String redirectUrl) {
         this.ticket = ticket;
         this.redirectUrl = redirectUrl;
     }
@@ -50,14 +48,15 @@ public class SimpleValidateInfo implements ValidateInfo {
      *
      * @return 票据 id
      */
+    @Override
     public String getTicket() {
         return ticket;
     }
 
     /**
-     * 获取机构信息
+     * 获取重定向 url
      *
-     * @return 机构信息
+     * @return 重定向 url
      */
     @Override
     public String getRedirectUrl() {
