@@ -44,6 +44,7 @@
         <module>shiro-extension</module>
         <module>sso</module>
         <module>spring-mvc-extension</module>
+        <module>freemarker-extension</module>
     </modules>
 
     <build>
