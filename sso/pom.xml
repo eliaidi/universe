@@ -11,7 +11,7 @@
 
     <artifactId>sso</artifactId>
     <packaging>pom</packaging>
-    <name>SSO Framework</name>
+    <name>sso</name>
     <description>simple sso framework</description>
     <url>https://github.com/dactiv/universe</url>
 

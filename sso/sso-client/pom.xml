@@ -10,7 +10,7 @@
 
     <artifactId>sso-client</artifactId>
     <packaging>jar</packaging>
-    <name>SSO Framework Client</name>
+    <name>sso-client</name>
     <description>simple sso framework client</description>
     <url>https://github.com/dactiv/universe</url>
 

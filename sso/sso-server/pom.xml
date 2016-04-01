@@ -10,7 +10,7 @@
 
     <artifactId>sso-server</artifactId>
     <packaging>jar</packaging>
-    <name>SSO Framework Server</name>
+    <name>sso-server</name>
     <description>simple sso framework server</description>
     <url>https://github.com/dactiv/universe</url>
 

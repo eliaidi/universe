@@ -11,7 +11,7 @@
 
     <artifactId>shiro-extension</artifactId>
     <packaging>jar</packaging>
-    <name>Shiro Framework Extension</name>
+    <name>shiro-extension</name>
     <description>apache shiro framework extension</description>
     <url>https://github.com/dactiv/universe</url>
 

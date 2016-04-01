@@ -14,8 +14,8 @@
 
     <artifactId>captcha-manager</artifactId>
     <packaging>jar</packaging>
-    <name>Captcha Manager</name>
-    <description>captcha manager</description>
+    <name>captcha-manager</name>
+    <description>captcha manager framework</description>
     <url>https://github.com/dactiv/universe</url>
 
     <dependencies>

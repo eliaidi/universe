@@ -13,7 +13,7 @@
 
     <artifactId>spring-mvc-extension</artifactId>
     <packaging>jar</packaging>
-    <name>Spring Mvc Framework Extension</name>
+    <name>spring-mvc-extension</name>
     <description>spring mvc framework extension</description>
     <url>https://github.com/dactiv/universe</url>
 

@@ -12,7 +12,7 @@
 
     <artifactId>map-validation</artifactId>
     <packaging>jar</packaging>
-    <name>Map Validation</name>
+    <name>map-validation</name>
     <description>a map object validation framework</description>
     <url>https://github.com/dactiv/universe</url>
 
