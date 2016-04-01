@@ -21,7 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.rmi.Remote;
@@ -51,8 +53,6 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
     private int connectTimeout;
     // 发送的 request property
     private Map<String, String> requestProperty = new HashMap<>();
-    // 如果为 true，则只要有条件就允许协议使用缓存。
-    private boolean useCaches = Boolean.TRUE;
     // 读取超时时间
     private int readTimeout;
 
@@ -72,15 +72,6 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
      */
     public void setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
-    }
-
-    /**
-     * 设置是否使用缓存，默认为是
-     *
-     * @param useCaches true 为是，否则false
-     */
-    public void setUseCaches(boolean useCaches) {
-        this.useCaches = useCaches;
     }
 
     /**
@@ -108,6 +99,13 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
      */
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
+    }
+
+
+    @Override
+    public Object findTemplateSource(String name) throws IOException {
+        URL url = getURL(name);
+        return url == null ? null : new RemoteTemplateSource(url, getURLConnectionUsesCaches());
     }
 
     @Override
@@ -140,8 +138,6 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
                     conn.addRequestProperty(entry.getKey(), entry.getValue());
                 }
             }
-            // 设置是否使用缓存
-            conn.setUseCaches(useCaches);
         } catch (IOException e) {
             if (LOGGER.isDebugEnabled()) {
                 e.printStackTrace();
@@ -153,4 +149,8 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
         return url;
     }
 
+    @Override
+    public Reader getReader(Object templateSource, String encoding) throws IOException {
+        return new InputStreamReader(((RemoteTemplateSource) templateSource).getInputStream(),encoding);
+    }
 }
