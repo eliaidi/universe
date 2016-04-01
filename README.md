@@ -67,4 +67,15 @@ maven:
       <artifactId>sso-client</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    
+
+## freemarker-extension
+
+freemarker-extension 是对 freemarker 框架的一个扩展，扩展内容不多，目前编写了一个远程模板调用的加载器。
+
+maven:
+
+    <dependency>
+      <groupId>com.github.dactiv.universe</groupId>
+      <artifactId>freemarker-extension</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
