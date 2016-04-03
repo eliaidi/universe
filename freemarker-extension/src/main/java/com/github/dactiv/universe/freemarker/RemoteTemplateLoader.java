@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class RemoteTemplateLoader extends URLTemplateLoader{
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Remote.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RemoteTemplateLoader.class);
 
     // 默认匹配模板名称正则表达式字符串
     private final static String DEFAULT_PATTERN_STRING = "(http|ftp|https|file):\\/\\/([\\w.]+\\/?)\\S*";
