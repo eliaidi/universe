@@ -105,7 +105,7 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
     @Override
     public Object findTemplateSource(String name) throws IOException {
         URL url = getURL(name);
-        return url == null ? null : new RemoteTemplateSource(url, getURLConnectionUsesCaches());
+        return url == null ? null : new RemoteTemplateSource(url, hostnameVerifier, connectTimeout, requestProperty, readTimeout, getURLConnectionUsesCaches());
     }
 
     @Override
@@ -122,22 +122,6 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
         try {
             // 创建 URL
             url = new URL(name);
-            URLConnection conn = url.openConnection();
-            // 如果为 https，判断是否需要加 hostname verifier
-            if (conn instanceof HttpsURLConnection) {
-                HostnameVerifier hv = hostnameVerifier == null ? HttpsURLConnection.getDefaultHostnameVerifier() : hostnameVerifier;
-                ((HttpsURLConnection)conn).setHostnameVerifier(hv);
-            }
-            // 设置链接超时时间
-            conn.setConnectTimeout(connectTimeout);
-            // 设置读取超时时间
-            conn.setReadTimeout(readTimeout);
-            // 设置请求配置信息
-            if (requestProperty != null && !requestProperty.isEmpty()) {
-                for (Map.Entry<String, String> entry : requestProperty.entrySet()) {
-                    conn.addRequestProperty(entry.getKey(), entry.getValue());
-                }
-            }
         } catch (IOException e) {
             if (LOGGER.isDebugEnabled()) {
                 e.printStackTrace();
