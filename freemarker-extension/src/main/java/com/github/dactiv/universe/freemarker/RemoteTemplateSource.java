@@ -15,8 +15,11 @@
  */
 package com.github.dactiv.universe.freemarker;
 
+import sun.net.www.protocol.file.FileURLConnection;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -34,16 +37,10 @@ public class RemoteTemplateSource {
 
     // URL 链接
     private URLConnection connection;
-    // https host name verifier;
-    private HostnameVerifier hostnameVerifier;
-    // 链接超时时间
-    private int connectTimeout;
-    // 发送的 request property
-    private Map<String, String> requestProperty = new HashMap<>();
-    // 读取超时时间
-    private int readTimeout;
-    // 是否使用缓存
-    private Boolean useCaches;
+    // 当前返回 URLConnection 的 input 流
+    private InputStream is;
+    // url
+    private URL url;
 
     /**
      * 远程模板源数据
@@ -58,17 +55,33 @@ public class RemoteTemplateSource {
      * @throws IOException
      */
     public RemoteTemplateSource(URL url, HostnameVerifier hv, int connectTimeout, Map<String, String> requestProperty, int readTimeout, Boolean useCaches) throws IOException {
+        this.url = url;
         this.connection = url.openConnection();
-        this.hostnameVerifier = hv;
-        this.connectTimeout = connectTimeout;
-        this.requestProperty = requestProperty;
-        this.readTimeout = readTimeout;
-        this.useCaches = useCaches;
+        // 如果为 https，判断是否需要加 hostname verifier
+        if (connection instanceof HttpsURLConnection) {
+            hv = hv == null ? HttpsURLConnection.getDefaultHostnameVerifier() : hv;
+            ((HttpsURLConnection) connection).setHostnameVerifier(hv);
+        }
+        // 设置链接超时时间
+        connection.setConnectTimeout(connectTimeout);
+        // 设置读取超时时间
+        connection.setReadTimeout(readTimeout);
+
+        if (useCaches != null) {
+            connection.setUseCaches(useCaches);
+        }
+
+        // 设置请求配置信息
+        if (requestProperty != null && !requestProperty.isEmpty()) {
+            for (Map.Entry<String, String> entry : requestProperty.entrySet()) {
+                connection.addRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof RemoteTemplateSource && connection.equals(((RemoteTemplateSource) o).connection);
+        return o instanceof RemoteTemplateSource && url.equals(((RemoteTemplateSource) o).url);
     }
 
     @Override
@@ -88,37 +101,44 @@ public class RemoteTemplateSource {
      * @throws IOException
      */
     public InputStream getInputStream() throws IOException {
+        is = connection.getInputStream();
+        return is;
+
+    }
+
+    /**
+     * 关闭 source 对象
+     *
+     * @throws IOException
+     */
+    public void close() throws IOException {
         try {
-            // 如果为 https，判断是否需要加 hostname verifier
-            if (connection instanceof HttpsURLConnection) {
-                HostnameVerifier hv = hostnameVerifier == null ? HttpsURLConnection.getDefaultHostnameVerifier() : hostnameVerifier;
-                ((HttpsURLConnection) connection).setHostnameVerifier(hv);
-            }
-            // 设置链接超时时间
-            connection.setConnectTimeout(connectTimeout);
-            // 设置读取超时时间
-            connection.setReadTimeout(readTimeout);
 
-            if (useCaches != null) {
-                connection.setUseCaches(useCaches);
-            }
-
-            // 设置请求配置信息
-            if (requestProperty != null && !requestProperty.isEmpty()) {
-                for (Map.Entry<String, String> entry : requestProperty.entrySet()) {
-                    connection.addRequestProperty(entry.getKey(), entry.getValue());
-                }
-            }
-
-            connection.connect();
-
-            return connection.getInputStream();
-        } finally {
             if (connection != null && connection instanceof HttpURLConnection) {
                 ((HttpURLConnection) connection).disconnect();
             }
 
+            if (is != null) {
+                is.close();
+            }
+
+        } finally {
+            connection = null;
+            is = null;
         }
     }
 
+    /**
+     * 获取 connection 最后修改时间
+     *
+     * @return 时间戳
+     */
+    public long getLastModified() {
+        long lastModified = connection.getLastModified();
+        if (lastModified == -1L && url.getProtocol().equals("file")) {
+            return new File(url.getFile()).lastModified();
+        } else {
+            return lastModified;
+        }
+    }
 }

@@ -20,13 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.net.URLConnection;
-import java.rmi.Remote;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -136,5 +133,15 @@ public class RemoteTemplateLoader extends URLTemplateLoader{
     @Override
     public Reader getReader(Object templateSource, String encoding) throws IOException {
         return new InputStreamReader(((RemoteTemplateSource) templateSource).getInputStream(),encoding);
+    }
+
+    @Override
+    public void closeTemplateSource(Object templateSource) throws IOException {
+        ((RemoteTemplateSource) templateSource).close();
+    }
+
+    @Override
+    public long getLastModified(Object templateSource) {
+        return ((RemoteTemplateSource) templateSource).getLastModified();
     }
 }
