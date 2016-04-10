@@ -15,8 +15,6 @@
  */
 package com.github.dactiv.universe.freemarker;
 
-import sun.net.www.protocol.file.FileURLConnection;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.File;
@@ -25,7 +23,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
