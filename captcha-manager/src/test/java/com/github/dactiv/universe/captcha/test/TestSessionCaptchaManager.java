@@ -19,6 +19,7 @@ package com.github.dactiv.universe.captcha.test;
 import com.github.dactiv.universe.captcha.entity.Captcha;
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.entity.support.FailureValidResult;
+import com.github.dactiv.universe.captcha.entity.support.JpegImgCaptchaToken;
 import com.github.dactiv.universe.captcha.entity.support.SuccessValidResult;
 import com.github.dactiv.universe.captcha.support.SessionCaptchaManager;
 import org.junit.Assert;
@@ -48,7 +49,8 @@ public class TestSessionCaptchaManager {
 
     @Test
     public void test() {
-        Captcha captcha = captchaManager.create();
+
+        Captcha captcha = captchaManager.create(new JpegImgCaptchaToken());
 
         Object value = mockHttpSession.getAttribute(SessionCaptchaManager.DEFAULT_CAPTCHA_ATTRIBUTE_NAME);
         Assert.assertNotNull(value);

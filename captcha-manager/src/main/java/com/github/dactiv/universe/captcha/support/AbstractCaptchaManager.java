@@ -19,6 +19,7 @@ package com.github.dactiv.universe.captcha.support;
 import com.github.dactiv.universe.captcha.CaptchaGenerator;
 import com.github.dactiv.universe.captcha.CaptchaManager;
 import com.github.dactiv.universe.captcha.entity.Captcha;
+import com.github.dactiv.universe.captcha.entity.CaptchaToken;
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.entity.support.FailureValidResult;
 import com.github.dactiv.universe.captcha.entity.support.SimpleCaptcha;
@@ -44,6 +45,10 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
      * 验证码生成器
      */
     private CaptchaGenerator captchaGenerator = new JpegImgCaptchaGenerator();
+    /**
+     * 当前验证码
+     */
+    private ThreadLocal<CaptchaToken> currentCaptchaToken = new ThreadLocal<>();
     /**
      * 验证码超时时间
      */
@@ -91,10 +96,16 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
      * @return 验证码实体
      */
     @Override
-    public Captcha create() {
+    public Captcha create(CaptchaToken token) {
 
+        if (token == null) {
+            return null;
+        }
+
+        currentCaptchaToken.set(token);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        String code = captchaGenerator.generate(outputStream);
+        token.setOutputStream(outputStream);
+        String code = captchaGenerator.generate(token);
         SimpleCaptcha simpleCaptcha = new SimpleCaptcha(getNewId(), code.toUpperCase(), new Date(), outputStream.toByteArray());
 
         save(simpleCaptcha);
@@ -138,7 +149,12 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
             validResult = new SuccessValidResult(new Date(), "验证成功");
         } catch (Exception e) {
             delete(id);
-            Captcha nextCaptcha = create();
+            CaptchaToken captchaToken = currentCaptchaToken.get();
+            if (captchaToken == null) {
+                throw new CaptchaException("找不到当前验证码令牌");
+            }
+            captchaToken.setOutputStream(null);
+            Captcha nextCaptcha = create(captchaToken);
             validResult = new FailureValidResult(new Date(), e.getMessage(), nextCaptcha);
         }
 

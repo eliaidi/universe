@@ -13,25 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.dactiv.universe.captcha;
+package com.github.dactiv.universe.captcha.entity.support;
 
 import com.github.dactiv.universe.captcha.entity.CaptchaToken;
-import com.github.dactiv.universe.captcha.exception.CaptchaException;
+
+import java.io.OutputStream;
 
 /**
- * 验证码生成器
+ * 验证码令牌实现类
  *
  * @author maurice
  */
-public interface CaptchaGenerator {
+public class CaptchaTokenSupport implements CaptchaToken {
+
+    // 图像流
+    private OutputStream outputStream;
 
     /**
-     * 生成验证码
-     *
-     * @param token 验证码令牌
-     *
-     * @return 验证码
+     * 验证码令牌实现类
      */
-    String generate(CaptchaToken token) throws CaptchaException;
+    public CaptchaTokenSupport() {
+
+    }
+
+    /**
+     * 获取图像流
+     *
+     * @return 图像流
+     */
+    @Override
+    public OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    /**
+     * 设置图像流
+     *
+     * @param outputStream 图像流
+     */
+    @Override
+    public void setOutputStream(OutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
 }

@@ -17,6 +17,7 @@
 package com.github.dactiv.universe.captcha;
 
 import com.github.dactiv.universe.captcha.entity.Captcha;
+import com.github.dactiv.universe.captcha.entity.CaptchaToken;
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 
 /**
@@ -43,9 +44,11 @@ public interface CaptchaManager {
     /**
      * 创建验证码
      *
+     * @param token 验证码令牌
+     *
      * @return 验证码实体
      */
-    Captcha create();
+    Captcha create(CaptchaToken token);
 
     /**
      * 验证验证码
