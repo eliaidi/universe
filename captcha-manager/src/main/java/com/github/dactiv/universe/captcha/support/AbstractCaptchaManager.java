@@ -21,9 +21,8 @@ import com.github.dactiv.universe.captcha.CaptchaManager;
 import com.github.dactiv.universe.captcha.entity.Captcha;
 import com.github.dactiv.universe.captcha.entity.CaptchaToken;
 import com.github.dactiv.universe.captcha.entity.ValidResult;
-import com.github.dactiv.universe.captcha.entity.support.FailureValidResult;
 import com.github.dactiv.universe.captcha.entity.support.SimpleCaptcha;
-import com.github.dactiv.universe.captcha.entity.support.SuccessValidResult;
+import com.github.dactiv.universe.captcha.entity.support.ValidResultSupport;
 import com.github.dactiv.universe.captcha.exception.CaptchaException;
 import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
 
@@ -146,16 +145,10 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
             }
 
             delete(id);
-            validResult = new SuccessValidResult(new Date(), "验证成功");
+            validResult = new ValidResultSupport(new Date(), "验证成功", Boolean.TRUE);
         } catch (Exception e) {
             delete(id);
-            CaptchaToken captchaToken = currentCaptchaToken.get();
-            if (captchaToken == null) {
-                throw new CaptchaException("找不到当前验证码令牌");
-            }
-            captchaToken.setOutputStream(null);
-            Captcha nextCaptcha = create(captchaToken);
-            validResult = new FailureValidResult(new Date(), e.getMessage(), nextCaptcha);
+            validResult = new ValidResultSupport(new Date(), e.getMessage(), Boolean.FALSE);
         }
 
         return validResult;

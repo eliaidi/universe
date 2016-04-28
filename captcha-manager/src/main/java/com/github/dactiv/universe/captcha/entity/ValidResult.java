@@ -40,4 +40,11 @@ public interface ValidResult extends Serializable{
      */
     String getMessage();
 
+    /**
+     * 是否认证通过
+     *
+     * @return true 为是，否则 false
+     */
+    boolean getIsValid();
+
 }

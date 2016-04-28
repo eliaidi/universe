@@ -17,7 +17,6 @@
 package com.github.dactiv.universe.shiro.filter;
 
 import com.github.dactiv.universe.captcha.entity.ValidResult;
-import com.github.dactiv.universe.captcha.entity.support.FailureValidResult;
 import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
 import com.github.dactiv.universe.shiro.exception.CaptchaException;
 import com.github.dactiv.universe.shiro.filter.captcha.DisplayCaptchaCondition;
@@ -105,7 +104,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
 
         ValidResult validResult = sessionCaptchaManager.valid(session.getId().toString(), currentCaptcha);
 
-        if (validResult instanceof FailureValidResult) {
+        if (!validResult.getIsValid()) {
             AuthenticationToken token = createToken(request, response);
             return onLoginFailure(token, new CaptchaException(validResult.getMessage()), request, response);
         }

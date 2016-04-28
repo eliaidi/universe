@@ -25,17 +25,19 @@ import java.util.Date;
  *
  * @author maurice
  */
-public class SuccessValidResult implements ValidResult{
+public class ValidResultSupport implements ValidResult{
 
     // 验证时间
     private Date validTime;
     // 验证信息
     private String message;
+    // 是否认证通过
+    private boolean isValid = Boolean.FALSE;
 
     /**
      * 验证码验证成功的实现
      */
-    public SuccessValidResult() {
+    public ValidResultSupport() {
     }
 
     /**
@@ -43,10 +45,12 @@ public class SuccessValidResult implements ValidResult{
      *
      * @param validTime 验证时间
      * @param message 验证信息
+     * @param isValid 是否认证通过
      */
-    public SuccessValidResult(Date validTime, String message) {
+    public ValidResultSupport(Date validTime, String message, boolean isValid) {
         this.validTime = validTime;
         this.message = message;
+        this.isValid = isValid;
     }
 
     /**
@@ -67,6 +71,16 @@ public class SuccessValidResult implements ValidResult{
     @Override
     public String getMessage() {
         return message;
+    }
+
+    /**
+     * 是否认证通过
+     *
+     * @return true 为是，否则 false
+     */
+    @Override
+    public boolean getIsValid() {
+        return isValid;
     }
 
 }
