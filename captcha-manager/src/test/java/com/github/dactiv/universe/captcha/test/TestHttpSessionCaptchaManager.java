@@ -20,7 +20,7 @@ import com.github.dactiv.universe.captcha.entity.Captcha;
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.entity.support.JpegImgCaptchaToken;
 import com.github.dactiv.universe.captcha.entity.support.ValidResultSupport;
-import com.github.dactiv.universe.captcha.support.SessionCaptchaManager;
+import com.github.dactiv.universe.captcha.support.HttpSessionCaptchaManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +36,9 @@ import org.springframework.mock.web.MockServletContext;
  * @author maurice
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class TestSessionCaptchaManager {
+public class TestHttpSessionCaptchaManager {
 
-    private SessionCaptchaManager captchaManager = new SessionCaptchaManager();
+    private HttpSessionCaptchaManager captchaManager = new HttpSessionCaptchaManager();
     private MockHttpSession mockHttpSession = new MockHttpSession(new MockServletContext(new DefaultResourceLoader()));
 
     @Before
@@ -51,13 +51,13 @@ public class TestSessionCaptchaManager {
 
         Captcha captcha = captchaManager.create(new JpegImgCaptchaToken());
 
-        Object value = mockHttpSession.getAttribute(SessionCaptchaManager.DEFAULT_CAPTCHA_ATTRIBUTE_NAME);
+        Object value = mockHttpSession.getAttribute(HttpSessionCaptchaManager.DEFAULT_CAPTCHA_ATTRIBUTE_NAME);
         Assert.assertNotNull(value);
 
         ValidResult validResult = captchaManager.valid(captcha.getId(), captcha.getCode());
         Assert.assertTrue(validResult instanceof ValidResultSupport);
 
-        value = mockHttpSession.getAttribute(SessionCaptchaManager.DEFAULT_CAPTCHA_ATTRIBUTE_NAME);
+        value = mockHttpSession.getAttribute(HttpSessionCaptchaManager.DEFAULT_CAPTCHA_ATTRIBUTE_NAME);
         Assert.assertNull(value);
 
         validResult = captchaManager.valid(captcha.getId(), "ssss");

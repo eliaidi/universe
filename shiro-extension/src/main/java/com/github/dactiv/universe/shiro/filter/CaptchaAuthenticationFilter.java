@@ -18,7 +18,7 @@ package com.github.dactiv.universe.shiro.filter;
 
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
-import com.github.dactiv.universe.captcha.support.SessionCaptchaManager;
+import com.github.dactiv.universe.captcha.support.HttpSessionCaptchaManager;
 import com.github.dactiv.universe.shiro.exception.CaptchaException;
 import com.github.dactiv.universe.shiro.filter.captcha.DisplayCaptchaCondition;
 import com.github.dactiv.universe.shiro.filter.captcha.support.SimpleDisplayCaptchaCondition;
@@ -57,7 +57,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
     // 显示验证码条件
     private List<DisplayCaptchaCondition> displayCaptchaConditions = new ArrayList<DisplayCaptchaCondition>();
     // session 验证码管理
-    private SessionCaptchaManager sessionCaptchaManager;
+    private HttpSessionCaptchaManager httpSessionCaptchaManager;
 
     /**
      * 验证码登录认证 Filter
@@ -96,11 +96,11 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
             return super.executeLogin(request, response);
         }
         HttpSession session = WebUtils.getHttpRequest(request).getSession();
-        sessionCaptchaManager.setCurrentSession(session);
+        httpSessionCaptchaManager.setCurrentSession(session);
         // 获取当前验证码
         String currentCaptcha = getCaptcha(request);
 
-        ValidResult validResult = sessionCaptchaManager.valid(session.getId(), currentCaptcha);
+        ValidResult validResult = httpSessionCaptchaManager.valid(session.getId(), currentCaptcha);
 
         if (!validResult.getIsValid()) {
             AuthenticationToken token = createToken(request, response);
@@ -192,18 +192,18 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
     /**
      * 设置 session 验证码管理
      *
-     * @param sessionCaptchaManager 验证码管理
+     * @param httpSessionCaptchaManager 验证码管理
      */
-    public void setSessionCaptchaManager(SessionCaptchaManager sessionCaptchaManager) {
-        this.sessionCaptchaManager = sessionCaptchaManager;
+    public void setHttpSessionCaptchaManager(HttpSessionCaptchaManager httpSessionCaptchaManager) {
+        this.httpSessionCaptchaManager = httpSessionCaptchaManager;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if(sessionCaptchaManager == null) {
-            sessionCaptchaManager = new SessionCaptchaManager();
-            sessionCaptchaManager.setCaptchaGenerator(new JpegImgCaptchaGenerator());
-            sessionCaptchaManager.setExpiredTime(DEFAULT_CAPTCHA_EXPIRED_TIME);
+        if(httpSessionCaptchaManager == null) {
+            httpSessionCaptchaManager = new HttpSessionCaptchaManager();
+            httpSessionCaptchaManager.setCaptchaGenerator(new JpegImgCaptchaGenerator());
+            httpSessionCaptchaManager.setExpiredTime(DEFAULT_CAPTCHA_EXPIRED_TIME);
         }
     }
 }

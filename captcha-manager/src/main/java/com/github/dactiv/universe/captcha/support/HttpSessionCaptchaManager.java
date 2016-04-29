@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author maurice
  */
-public class SessionCaptchaManager extends AbstractCaptchaManager {
+public class HttpSessionCaptchaManager extends AbstractCaptchaManager {
 
     /**
      * 存储在 session 的 attribute 名称的默认值
