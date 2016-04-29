@@ -18,14 +18,12 @@ package com.github.dactiv.universe.shiro.filter;
 
 import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
+import com.github.dactiv.universe.captcha.support.SessionCaptchaManager;
 import com.github.dactiv.universe.shiro.exception.CaptchaException;
 import com.github.dactiv.universe.shiro.filter.captcha.DisplayCaptchaCondition;
-import com.github.dactiv.universe.shiro.filter.captcha.SessionCaptchaManager;
 import com.github.dactiv.universe.shiro.filter.captcha.support.SimpleDisplayCaptchaCondition;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -33,6 +31,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,13 +95,12 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
         if (!isDisplayCaptcha(request, response)) {
             return super.executeLogin(request, response);
         }
-
-        Session session = SecurityUtils.getSubject().getSession();
+        HttpSession session = WebUtils.getHttpRequest(request).getSession();
         sessionCaptchaManager.setCurrentSession(session);
         // 获取当前验证码
         String currentCaptcha = getCaptcha(request);
 
-        ValidResult validResult = sessionCaptchaManager.valid(session.getId().toString(), currentCaptcha);
+        ValidResult validResult = sessionCaptchaManager.valid(session.getId(), currentCaptcha);
 
         if (!validResult.getIsValid()) {
             AuthenticationToken token = createToken(request, response);
