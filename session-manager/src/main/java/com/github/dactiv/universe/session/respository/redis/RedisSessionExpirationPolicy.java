@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * redis session 超时供应者，用于管理 session 的超时操作
+ * redis session 超时政策，用于管理 session 的超时操作
  *
  * @author maurice
  */
