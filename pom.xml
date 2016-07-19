@@ -36,15 +36,16 @@
 		<developerConnection>scm:git:ssh://git@github.com:dactiv/universe.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-	
-	<modules>
-		<module>parent</module>
+
+    <modules>
+        <module>parent</module>
         <module>map-validation</module>
         <module>captcha-manager</module>
         <module>shiro-extension</module>
         <module>sso</module>
         <module>spring-mvc-extension</module>
         <module>freemarker-extension</module>
+        <module>session-manager</module>
     </modules>
 
     <build>
