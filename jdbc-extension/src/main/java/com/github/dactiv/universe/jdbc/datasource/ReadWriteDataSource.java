@@ -192,7 +192,7 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
             slaveDataSourceObtainPolicy = new SequenceSlaveDataSourceObtainPolicy();
         }
         
-        slaveDataSourceObtainPolicy.setSlave(slave);
+        slaveDataSourceObtainPolicy.setTargetDataSources(slave);
         
         if (this.defaultTargetDataSource != null) {
             this.master = resolveSpecifiedDataSource(this.defaultTargetDataSource);

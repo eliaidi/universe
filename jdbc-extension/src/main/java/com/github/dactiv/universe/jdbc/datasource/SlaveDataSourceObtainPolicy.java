@@ -28,7 +28,7 @@ import java.util.Map;
 public abstract class SlaveDataSourceObtainPolicy {
 
     // 从库数据源映射
-    private Map<Object, DataSource> slave;
+    private Map<Object, DataSource> targetDataSources;
     // 从库数据源 key 集合
     private List<SlaveDataSourceKey> keys = new ArrayList<>();
 
@@ -41,10 +41,10 @@ public abstract class SlaveDataSourceObtainPolicy {
     /**
      * 从库数据获取政策
      *
-     * @param slave 从库数据源映射
+     * @param targetDataSources 从库数据源映射
      */
-    public SlaveDataSourceObtainPolicy(Map<Object, DataSource> slave) {
-        setSlave(slave);
+    public SlaveDataSourceObtainPolicy(Map<Object, DataSource> targetDataSources) {
+        setTargetDataSources(targetDataSources);
     }
 
     /**
@@ -54,7 +54,9 @@ public abstract class SlaveDataSourceObtainPolicy {
      */
     public DataSource obtainDataSource() {
         SlaveDataSourceKey key = getSlaveKey(keys);
-        return slave.get(key.getKey());
+        key.setLastUsedTime(System.currentTimeMillis());
+        key.setUseNumber(key.getUseNumber() + 1);
+        return targetDataSources.get(key.getKey());
     }
 
     /**
@@ -69,11 +71,11 @@ public abstract class SlaveDataSourceObtainPolicy {
     /**
      * 设置从库数据源映射
      *
-     * @param slave 从库数据源映射
+     * @param targetDataSources 从库数据源映射
      */
-    public void setSlave(Map<Object, DataSource> slave) {
-        this.slave = slave;
-        for (Object o : slave.entrySet()) {
+    public void setTargetDataSources(Map<Object, DataSource> targetDataSources) {
+        this.targetDataSources = targetDataSources;
+        for (Object o : targetDataSources.entrySet()) {
             keys.add(new SlaveDataSourceKey(o, System.currentTimeMillis(), 0));
         }
     }

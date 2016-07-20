@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SequenceSlaveDataSourceObtainPolicy extends SlaveDataSourceObtainPolicy {
 
-    private AtomicInteger atomicInteger = new AtomicInteger(0);
+    private Integer index = 0;
 
     /**
      * 获取从库数据源 key 对象
@@ -39,14 +39,12 @@ public class SequenceSlaveDataSourceObtainPolicy extends SlaveDataSourceObtainPo
      */
     @Override
     protected SlaveDataSourceKey getSlaveKey(List<SlaveDataSourceKey> keys) {
-        Integer value = atomicInteger.decrementAndGet();
 
-        if (value > keys.size()) {
-            atomicInteger.compareAndSet(value, 0);
-            value = atomicInteger.decrementAndGet();
+        if (index > keys.size()) {
+            index = 0;
         }
 
-        return keys.get(value);
+        return keys.get(index++);
     }
 
 }

@@ -74,4 +74,12 @@ public class SlaveDataSourceKey {
     public Object getKey() {
         return key;
     }
+
+    public void setLastUsedTime(long lastUsedTime) {
+        this.lastUsedTime = lastUsedTime;
+    }
+
+    public void setUseNumber(long useNumber) {
+        this.useNumber = useNumber;
+    }
 }
