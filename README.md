@@ -80,7 +80,7 @@ maven:
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
-    ## freemarker-extension
+## session-manager
 
 session-manager 是对 session 管理的一个扩展，可将 session 信息存储在指定的位置中，如:redis。
 
@@ -91,6 +91,8 @@ maven:
       <artifactId>session-manager</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
+
+## jdbc-extension
 
 jdbc-extension 是对 jdbc 层的一个封装，主要负责读写分离，分表分库等操作。
 
