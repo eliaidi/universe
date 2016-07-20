@@ -36,7 +36,7 @@ public class RandomDataSourceObtainPolicy extends DataSourceObtainPolicy {
      */
     @Override
     protected DataSourceKey getSlaveKey(List<DataSourceKey> keys) {
-        return keys.get(new Random().nextInt(keys.size()));
+        return keys.isEmpty() ? null : keys.get(new Random().nextInt(keys.size()));
     }
 
 }

@@ -38,6 +38,10 @@ public class UsedDataSourceObtainPolicy extends DataSourceObtainPolicy {
     @Override
     protected DataSourceKey getSlaveKey(List<DataSourceKey> keys) {
 
+        if (keys.isEmpty()) {
+            return null;
+        }
+
         Collections.sort(keys, new Comparator<DataSourceKey>() {
             @Override
             public int compare(DataSourceKey target, DataSourceKey source) {
@@ -45,7 +49,7 @@ public class UsedDataSourceObtainPolicy extends DataSourceObtainPolicy {
             }
         });
 
-        return keys.get(0);
+        return keys.iterator().next();
     }
 
 }
