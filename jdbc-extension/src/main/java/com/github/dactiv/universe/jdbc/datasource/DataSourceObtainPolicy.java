@@ -25,17 +25,17 @@ import java.util.Map;
  *
  * @author maurice
  */
-public abstract class SlaveDataSourceObtainPolicy {
+public abstract class DataSourceObtainPolicy {
 
     // 从库数据源映射
     private Map<Object, DataSource> targetDataSources;
     // 从库数据源 key 集合
-    private List<SlaveDataSourceKey> keys = new ArrayList<>();
+    private List<DataSourceKey> keys = new ArrayList<>();
 
     /**
      * 从库数据获取政策
      */
-    public SlaveDataSourceObtainPolicy() {
+    public DataSourceObtainPolicy() {
     }
 
     /**
@@ -43,7 +43,7 @@ public abstract class SlaveDataSourceObtainPolicy {
      *
      * @param targetDataSources 从库数据源映射
      */
-    public SlaveDataSourceObtainPolicy(Map<Object, DataSource> targetDataSources) {
+    public DataSourceObtainPolicy(Map<Object, DataSource> targetDataSources) {
         setTargetDataSources(targetDataSources);
     }
 
@@ -53,10 +53,17 @@ public abstract class SlaveDataSourceObtainPolicy {
      * @return 数据源
      */
     public DataSource obtainDataSource() {
-        SlaveDataSourceKey key = getSlaveKey(keys);
-        key.setLastUsedTime(System.currentTimeMillis());
-        key.setUseNumber(key.getUseNumber() + 1);
-        return targetDataSources.get(key.getKey());
+        DataSourceKey key = getSlaveKey(keys);
+
+        if (key != null) {
+
+            key.setLastUsedTime(System.currentTimeMillis());
+            key.setUseNumber(key.getUseNumber() + 1);
+
+            return targetDataSources.get(key.getKey());
+        }
+
+        return null;
     }
 
     /**
@@ -66,7 +73,7 @@ public abstract class SlaveDataSourceObtainPolicy {
      *
      * @return 从库数据源 key 对象
      */
-    protected abstract SlaveDataSourceKey getSlaveKey(List<SlaveDataSourceKey> keys);
+    protected abstract DataSourceKey getSlaveKey(List<DataSourceKey> keys);
 
     /**
      * 设置从库数据源映射
@@ -75,8 +82,8 @@ public abstract class SlaveDataSourceObtainPolicy {
      */
     public void setTargetDataSources(Map<Object, DataSource> targetDataSources) {
         this.targetDataSources = targetDataSources;
-        for (Object o : targetDataSources.entrySet()) {
-            keys.add(new SlaveDataSourceKey(o, System.currentTimeMillis(), 0));
+        for (Map.Entry<Object, DataSource> o : targetDataSources.entrySet()) {
+            keys.add(new DataSourceKey(o.getKey(), System.currentTimeMillis(), 0L));
         }
     }
 

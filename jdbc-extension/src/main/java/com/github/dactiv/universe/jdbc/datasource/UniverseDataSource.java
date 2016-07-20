@@ -15,14 +15,7 @@
  */
 package com.github.dactiv.universe.jdbc.datasource;
 
-import com.github.dactiv.universe.jdbc.datasource.support.SequenceSlaveDataSourceObtainPolicy;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jdbc.datasource.AbstractDataSource;
-import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
-import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-import org.springframework.transaction.NoTransactionException;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import com.github.dactiv.universe.jdbc.datasource.support.SequenceDataSourceObtainPolicy;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -31,11 +24,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 读写分离数据源
+ * 动态数据源
  *
  * @author maurice
  */
-public class ReadWriteDataSource extends AbstractDataSource implements InitializingBean{
+public class UniverseDataSource extends RoutingDataSource {
+
+    private final static ThreadLocal<ReadWriteType> READ_WRITE_TYPE_THREAD_LOCAL = new ThreadLocal<ReadWriteType>();
 
     // 标目数据源映射(从库)
     private Map<Object, Object> targetDataSources;
@@ -43,12 +38,12 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
     private Object defaultTargetDataSource;
     // true 表示如果在从库找不到数据库，就使用主库的，否则 false
     private boolean lenientFallback = true;
-    // jndi 数据库查找
-    private DataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
+    // jndi 数据源查找者
+    private JndiDataSourceFinder jndiDataSourceFinder = new JndiDataSourceFinder();
     // 主库数据源
     private DataSource master;
     // 从库数据源获取政策
-    private SlaveDataSourceObtainPolicy slaveDataSourceObtainPolicy;
+    private DataSourceObtainPolicy dataSourceObtainPolicy;
 
     /**
      * 设置标目数据源映射(从库)
@@ -78,12 +73,21 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
     }
 
     /**
+     * 设置 jndi 数据源操作者
+     *
+     * @param jndiDataSourceFinder jndi 数据源操作者
+     */
+    public void setJndiDataSourceFinder(JndiDataSourceFinder jndiDataSourceFinder) {
+        this.jndiDataSourceFinder = jndiDataSourceFinder;
+    }
+
+    /**
      * 设置从库数据源获取政策
      * 
-     * @param slaveDataSourceObtainPolicy 从库数据源获取政策
+     * @param dataSourceObtainPolicy 从库数据源获取政策
      */
-    public void setSlaveDataSourceObtainPolicy(SlaveDataSourceObtainPolicy slaveDataSourceObtainPolicy) {
-        this.slaveDataSourceObtainPolicy = slaveDataSourceObtainPolicy;
+    public void setDataSourceObtainPolicy(DataSourceObtainPolicy dataSourceObtainPolicy) {
+        this.dataSourceObtainPolicy = dataSourceObtainPolicy;
     }
 
     /**
@@ -142,10 +146,9 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
      */
     protected DataSource getTargetDataSource() throws SQLException {
         DataSource target;
-        TransactionStatus status = getTransactionStatus();
 
-        if (status == null || status.isRollbackOnly()) {
-            target = slaveDataSourceObtainPolicy.obtainDataSource();
+        if (isRead()) {
+            target = dataSourceObtainPolicy.obtainDataSource();
         } else {
             target = master;
         }
@@ -161,38 +164,24 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
         return target;
     }
 
-    /**
-     * 获取当前事务状态
-     *
-     * @return 事务状态
-     */
-    private TransactionStatus getTransactionStatus() {
-        try {
-            return TransactionAspectSupport.currentTransactionStatus();
-        }catch (NoTransactionException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public void init() throws Exception {
 
         if (this.targetDataSources == null) {
             throw new IllegalArgumentException("targetDataSources 不能为 null");
         }
 
-        Map<Object, DataSource> slave = new HashMap<Object, DataSource>(this.targetDataSources.size());
+        Map<Object, javax.sql.DataSource> slave = new HashMap<Object, DataSource>(this.targetDataSources.size());
         for (Map.Entry<Object, Object> entry : this.targetDataSources.entrySet()) {
             Object lookupKey = resolveSpecifiedLookupKey(entry.getKey());
             DataSource dataSource = resolveSpecifiedDataSource(entry.getValue());
             slave.put(lookupKey, dataSource);
         }
         
-        if(slaveDataSourceObtainPolicy == null) {
-            slaveDataSourceObtainPolicy = new SequenceSlaveDataSourceObtainPolicy();
+        if(dataSourceObtainPolicy == null) {
+            dataSourceObtainPolicy = new SequenceDataSourceObtainPolicy();
         }
         
-        slaveDataSourceObtainPolicy.setTargetDataSources(slave);
+        dataSourceObtainPolicy.setTargetDataSources(slave);
         
         if (this.defaultTargetDataSource != null) {
             this.master = resolveSpecifiedDataSource(this.defaultTargetDataSource);
@@ -213,7 +202,7 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
     /**
      * 获取指定的数据源
      *
-     * @param dataSource 数据源值，String 或 javax.sql.DataSource 类型
+     * @param dataSource 数据源值，String 或 javax.sql.UniverseDataSource 类型
      *
      * @return 数据源
      *
@@ -222,12 +211,51 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
     protected DataSource resolveSpecifiedDataSource(Object dataSource) throws IllegalArgumentException {
         if (dataSource instanceof DataSource) {
             return (DataSource) dataSource;
+        } else if (dataSource instanceof String) {
+            return this.jndiDataSourceFinder.getDataSource((String) dataSource);
+        } else {
+            throw new IllegalArgumentException("类型不正确仅支出[javax.sql.UniverseDataSource] 和 String 类型的值，当前 dataSource 为: " + dataSource);
         }
-        else if (dataSource instanceof String) {
-            return this.dataSourceLookup.getDataSource((String) dataSource);
-        }
-        else {
-            throw new IllegalArgumentException("类型不正确仅支出[javax.sql.DataSource] 和 String 类型的值，当前 dataSource 为: " + dataSource);
-        }
+    }
+
+    /**
+     * 设置本次操作为只读操作
+     */
+    public static void setRead() {
+        READ_WRITE_TYPE_THREAD_LOCAL.set(ReadWriteType.READ);
+    }
+
+    /**
+     * 设置本次操作为写入操作
+     */
+    public static void setWrite() {
+        READ_WRITE_TYPE_THREAD_LOCAL.set(ReadWriteType.WRITE);
+    }
+
+    /**
+     * 获取当前操作类型
+     *
+     * @return 操作类型
+     */
+    public static ReadWriteType currentType() {
+        return READ_WRITE_TYPE_THREAD_LOCAL.get();
+    }
+
+    /**
+     * 获取当前是否只读状态
+     *
+     * @return true 表示是，否则 false
+     */
+    public static boolean isRead() {
+        return currentType() == null || currentType().equals(ReadWriteType.READ);
+    }
+
+    /**
+     * 获取当前是hi否写入操作
+     *
+     * @return true 表示是，否则 false
+     */
+    public static boolean isWrite() {
+        return currentType() != null && currentType().equals(ReadWriteType.WRITE);
     }
 }

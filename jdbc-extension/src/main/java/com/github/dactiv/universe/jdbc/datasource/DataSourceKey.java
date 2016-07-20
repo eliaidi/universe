@@ -20,19 +20,19 @@ package com.github.dactiv.universe.jdbc.datasource;
  *
  * @author maurice
  */
-public class SlaveDataSourceKey {
+public class DataSourceKey {
 
     // key 名称
     private Object key;
     // 最后使用时间
-    private long lastUsedTime;
+    private Long lastUsedTime;
     // 使用次数
-    private long useNumber;
+    private Long useNumber;
 
     /**
      * 从库数据源 key 对象
      */
-    public SlaveDataSourceKey() {
+    public DataSourceKey() {
     }
 
     /**
@@ -42,7 +42,7 @@ public class SlaveDataSourceKey {
      * @param lastUsedTime 最后使用时间
      * @param useNumber useNumber;
      */
-    public SlaveDataSourceKey(Object key, long lastUsedTime, long useNumber) {
+    public DataSourceKey(Object key, Long lastUsedTime, Long useNumber) {
         this.key = key;
         this.lastUsedTime = lastUsedTime;
         this.useNumber = useNumber;
@@ -53,7 +53,7 @@ public class SlaveDataSourceKey {
      *
      * @return 时间戳
      */
-    public long getLastUsedTime() {
+    public Long getLastUsedTime() {
         return lastUsedTime;
     }
 
@@ -62,7 +62,7 @@ public class SlaveDataSourceKey {
      *
      * @return 次数
      */
-    public long getUseNumber() {
+    public Long getUseNumber() {
         return useNumber;
     }
 
@@ -75,11 +75,11 @@ public class SlaveDataSourceKey {
         return key;
     }
 
-    public void setLastUsedTime(long lastUsedTime) {
+    public void setLastUsedTime(Long lastUsedTime) {
         this.lastUsedTime = lastUsedTime;
     }
 
-    public void setUseNumber(long useNumber) {
+    public void setUseNumber(Long useNumber) {
         this.useNumber = useNumber;
     }
 }

@@ -15,36 +15,37 @@
  */
 package com.github.dactiv.universe.jdbc.datasource.support;
 
-import com.github.dactiv.universe.jdbc.datasource.SlaveDataSourceKey;
-import com.github.dactiv.universe.jdbc.datasource.SlaveDataSourceObtainPolicy;
+import com.github.dactiv.universe.jdbc.datasource.DataSourceKey;
+import com.github.dactiv.universe.jdbc.datasource.DataSourceObtainPolicy;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 按顺序获取的从库数据源获取政策
+ * 按最后使用时间获取的数据源政策
  *
  * @author maurice
  */
-public class SequenceSlaveDataSourceObtainPolicy extends SlaveDataSourceObtainPolicy {
-
-    private Integer index = 0;
+public class LastUsedTimeDataSourceObtainPolicy extends DataSourceObtainPolicy {
 
     /**
      * 获取从库数据源 key 对象
      *
      * @param keys key 对象集合
-     *
      * @return 从库数据源 key 对象
      */
     @Override
-    protected SlaveDataSourceKey getSlaveKey(List<SlaveDataSourceKey> keys) {
+    protected DataSourceKey getSlaveKey(List<DataSourceKey> keys) {
 
-        if (index > keys.size()) {
-            index = 0;
-        }
+        Collections.sort(keys, new Comparator<DataSourceKey>() {
+            @Override
+            public int compare(DataSourceKey target, DataSourceKey source) {
+                return target.getUseNumber().compareTo(source.getUseNumber());
+            }
+        });
 
-        return keys.get(index++);
+        return keys.get(0);
     }
 
 }
