@@ -40,10 +40,10 @@ public class HttpRequestValidationManager extends AbstractTicketValidationManage
      * @return 验证令牌
      */
     @Override
-    protected ValidateToken createValidToken(Object requestPairSource) {
+    protected ValidateToken createValidTicket(Object requestPairSource) {
 
         if (WebUtils.isHttp(requestPairSource)) {
-            throw new UrlTicketValidateException("该请求不是 http 请求");
+            throw new UrlTicketValidateException("ticket valid only support http request");
         }
 
         HttpServletRequest request = (HttpServletRequest) requestPairSource;

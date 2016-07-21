@@ -38,7 +38,7 @@ public class MapSessionRepository implements SessionRepository<ExpiringSession> 
 
     public MapSessionRepository(Map<String, ExpiringSession> sessions) {
         if (sessions == null) {
-            throw new IllegalArgumentException("sessions 不能为 null");
+            throw new IllegalArgumentException("sessions can't be null");
         }
         this.sessions = sessions;
     }

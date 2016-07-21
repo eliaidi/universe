@@ -102,7 +102,7 @@ public class SimpleCookieSerializer implements CookieSerializer {
      */
     public void setUseHttpOnlyCookie(boolean useHttpOnlyCookie) {
         if (useHttpOnlyCookie && !isServlet3()) {
-            throw new IllegalArgumentException("无法设置 useHttpOnlyCookie 为 true，因为系统不支持 servlet 3+");
+            throw new IllegalArgumentException("servlet 3+ not support useHttpOnlyCookie true");
         }
         this.useHttpOnlyCookie = useHttpOnlyCookie;
     }
@@ -158,7 +158,7 @@ public class SimpleCookieSerializer implements CookieSerializer {
      */
     public void setDomainName(String domainName) {
         if (this.domainNamePattern != null) {
-            throw new IllegalStateException("域名表达式不能为 null");
+            throw new IllegalStateException("domainNamePattern cannot be null");
         }
         this.domainName = domainName;
     }
@@ -170,7 +170,7 @@ public class SimpleCookieSerializer implements CookieSerializer {
      */
     public void setDomainNamePattern(String domainNamePattern) {
         if (this.domainName != null) {
-            throw new IllegalStateException("域名表达式不能为 null");
+            throw new IllegalStateException("domainName can't be null");
         }
         this.domainNamePattern = Pattern.compile(domainNamePattern, Pattern.CASE_INSENSITIVE);
     }

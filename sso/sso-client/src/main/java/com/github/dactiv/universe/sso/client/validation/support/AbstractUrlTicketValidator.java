@@ -151,7 +151,7 @@ public abstract class AbstractUrlTicketValidator implements TicketValidator {
             String response = getResponseFromServer(new URL(url), hostnameVerifier, encoding);
 
             if (StringUtils.isEmpty(response)) {
-                throw new TicketValidationException("sso 无响应");
+                throw new TicketValidationException("sso is not response or response is empty");
             }
             return parseResponseFromServer(response);
         } catch (MalformedURLException e) {

@@ -52,7 +52,7 @@ public class JsonFileOrganizationManager implements OrganizationManager {
      */
     public void install() {
         if (!jsonFile.exists() || !jsonFile.mkdirs()) {
-            throw new OrganizationException("创建" + jsonFilePath + "文件夹失败");
+            throw new OrganizationException("create " + jsonFilePath + " error");
         }
     }
 

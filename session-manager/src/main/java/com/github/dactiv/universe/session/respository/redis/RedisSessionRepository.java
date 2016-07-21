@@ -91,7 +91,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
      * @param sessionRedisOperations redis 操作类
      */
     public RedisSessionRepository(RedisOperations<Object, Object> sessionRedisOperations) {
-        Assert.notNull(sessionRedisOperations, "sessionRedisOperations 不能为 null");
+        Assert.notNull(sessionRedisOperations, "sessionRedisOperations can't be null");
         this.sessionRedisOperations = sessionRedisOperations;
         this.expirationPolicy = new RedisSessionExpirationPolicy(sessionRedisOperations,this);
     }
@@ -101,7 +101,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
      * @param applicationEventPublisher reids 事件发布者
      */
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        Assert.notNull(applicationEventPublisher,"applicationEventPublisher 不能为 null");
+        Assert.notNull(applicationEventPublisher,"applicationEventPublisher can't be null");
         this.eventPublisher = applicationEventPublisher;
     }
 
@@ -120,7 +120,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
      * @param defaultSerializer redis 序列化操作
      */
     public void setDefaultSerializer(RedisSerializer<Object> defaultSerializer) {
-        Assert.notNull(defaultSerializer, "defaultSerializer 不能为 null");
+        Assert.notNull(defaultSerializer, "defaultSerializer can't be null");
         this.defaultSerializer = defaultSerializer;
     }
 
@@ -130,7 +130,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
      * @param redisFlushMode 枚举类型
      */
     public void setRedisFlushMode(RedisFlushMode redisFlushMode) {
-        Assert.notNull(redisFlushMode, "redisFlushMode 不能为 null");
+        Assert.notNull(redisFlushMode, "redisFlushMode can't be null");
         this.redisFlushMode = redisFlushMode;
     }
 
@@ -151,7 +151,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
      * @return redis 操作模板
      */
     private static RedisTemplate<Object, Object> createDefaultTemplate(RedisConnectionFactory connectionFactory) {
-        Assert.notNull(connectionFactory, "connectionFactory 不能为 null");
+        Assert.notNull(connectionFactory, "connectionFactory can't be null");
         RedisTemplate<Object, Object> template = new RedisTemplate<Object, Object>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
@@ -328,7 +328,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
             RedisSession session = getSession(sessionId, true);
 
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("为ID为 " + sessionId + "的 session 推送销毁操作");
+                LOGGER.debug("publishing session destroyed event for session " + sessionId);
             }
 
             if (isDeleted) {
@@ -389,7 +389,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
         try {
             this.eventPublisher.publishEvent(event);
         } catch (Throwable ex) {
-            LOGGER.error("推送 " + event + "事件错误.", ex);
+            LOGGER.error("publishing even " + event + " error.", ex);
         }
     }
 

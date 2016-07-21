@@ -144,7 +144,7 @@ public class HttpExpiringSession<S extends ExpiringSession> implements HttpSessi
      */
     private void checkState() {
         if (this.invalidated) {
-            throw new IllegalStateException("session 已超时");
+            throw new IllegalStateException("session invalidated");
         }
     }
 

@@ -70,7 +70,7 @@ public final class MapSession implements ExpiringSession, Serializable {
     public MapSession(ExpiringSession session) {
 
         if (session == null) {
-            throw new IllegalArgumentException("session 不能 null");
+            throw new IllegalArgumentException("session can't be null");
         }
 
         this.id = session.getId();

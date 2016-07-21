@@ -33,8 +33,7 @@ public interface RequestResponsePostProcessor {
      *
      * @return 自定义的 HttpServletRequest
      */
-    HttpServletRequest wrapRequest(HttpServletRequest request,
-                                   HttpServletResponse response);
+    HttpServletRequest wrapRequest(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 获取一个自定义的 HttpServletResponse
@@ -44,6 +43,5 @@ public interface RequestResponsePostProcessor {
      *
      * @return 自定义的 HttpServletResponse
      */
-    HttpServletResponse wrapResponse(HttpServletRequest request,
-                                     HttpServletResponse response);
+    HttpServletResponse wrapResponse(HttpServletRequest request, HttpServletResponse response);
 }

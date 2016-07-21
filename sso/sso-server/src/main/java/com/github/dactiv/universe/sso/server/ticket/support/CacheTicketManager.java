@@ -81,7 +81,7 @@ public class CacheTicketManager implements TicketManager, TicketValidationManage
         Ticket ticket = getTicketCache().get(id);
 
         if (ticket != null && !ticketClass.isAssignableFrom(ticket.getClass())) {
-            throw new TicketException("id 为:" + id + " 的票据类型不是" + ticketClass + "的类型");
+            throw new TicketException("id: " + id + " ticket type is not assignable from" + ticketClass);
         }
 
         return (T) ticket;

@@ -57,7 +57,7 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
      */
     public SessionRepositoryFilter(SessionRepository<S> sessionRepository) {
         if (sessionRepository == null) {
-            throw new IllegalArgumentException("Session 存储库接口不能为 null");
+            throw new IllegalArgumentException("sessionRepository can't be null");
         }
         this.sessionRepository = sessionRepository;
     }
@@ -78,7 +78,7 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
      */
     public void setHttpSessionStrategy(MultiHttpSessionStrategy httpSessionStrategy) {
         if (httpSessionStrategy == null) {
-            throw new IllegalArgumentException("http session 策略不能为 null");
+            throw new IllegalArgumentException("httpSessionStrategy can't be null");
         }
         this.httpSessionStrategy = httpSessionStrategy;
     }
@@ -200,9 +200,8 @@ public class SessionRepositoryFilter<S extends ExpiringSession> extends OncePerR
             HttpSession session = getSession(false);
             // 如果获取不到，什么都不做
             if (session == null) {
-                throw new IllegalStateException("无法更改 session id，request 里面没有 session 可访问");
+                throw new IllegalStateException("could't change session id，get session from request is a null value");
             }
-
 
             Map<String, Object> attrs = new HashMap<String, Object>();
             // 获取 session 的当前属性

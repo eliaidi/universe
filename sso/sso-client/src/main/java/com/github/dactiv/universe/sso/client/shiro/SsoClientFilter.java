@@ -91,7 +91,7 @@ public class SsoClientFilter extends AuthenticatingFilter {
                 saveRequestAndRedirectToLogin(request, response);
             }
         } catch (IOException exception) {
-            LOGGER.error("sso 认证失败后，重定向:" + failureUrl + "出错", exception);
+            LOGGER.error("sso login failure than redirect to url:" + failureUrl + "error", exception);
         }
         return Boolean.FALSE;
     }

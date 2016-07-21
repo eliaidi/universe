@@ -116,7 +116,7 @@ public class RedisSessionExpirationPolicy {
         long prevMin = roundDownMinute(now);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("在 " + new Date(prevMin) + "时，清除超时 session");
+            LOGGER.debug(new Date(prevMin) + " clean session");
         }
 
         String expirationKey = getExpirationKey(prevMin);

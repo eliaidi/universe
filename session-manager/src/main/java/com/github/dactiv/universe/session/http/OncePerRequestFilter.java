@@ -36,7 +36,7 @@ abstract class OncePerRequestFilter implements Filter{
                                FilterChain filterChain) throws ServletException, IOException {
 
         if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
-            throw new ServletException("类 OncePerRequestFilter 仅支持 http servlet request");
+            throw new ServletException("OncePerRequestFilter only support http servlet request");
         }
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;

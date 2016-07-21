@@ -17,6 +17,7 @@
 
 package com.github.dactiv.universe.sso.server.validation.support;
 
+import com.github.dactiv.universe.sso.server.exception.TicketExpiredException;
 import com.github.dactiv.universe.sso.server.exception.TicketNotFoundException;
 import com.github.dactiv.universe.sso.server.exception.UrlTicketValidateException;
 import com.github.dactiv.universe.sso.server.organization.OrganizationManager;
@@ -83,7 +84,7 @@ public abstract class AbstractTicketValidationManager implements TicketValidatio
     public Map<String, Object> valid(Object requestPairSource) {
 
         Map<String, Object> result = new HashMap<>();
-        ValidateToken token = createValidToken(requestPairSource);
+        ValidateToken token = createValidTicket(requestPairSource);
 
         try {
             result = valid(token);
@@ -102,7 +103,7 @@ public abstract class AbstractTicketValidationManager implements TicketValidatio
      *
      * @return 验证令牌
      */
-    protected abstract ValidateToken createValidToken(Object requestPairSource);
+    protected abstract ValidateToken createValidTicket(Object requestPairSource);
 
     /**
      * 验证票据
@@ -114,7 +115,7 @@ public abstract class AbstractTicketValidationManager implements TicketValidatio
         SimpleAuthenticationTicket ticket = ticketManager.get(token.getTicket(), SimpleAuthenticationTicket.class);
 
         if (ticket == null) {
-            throw new TicketNotFoundException("找不到 " + token.getTicket() + " 票据");
+            throw new TicketNotFoundException("token " + token.getTicket() + " not found");
         }
 
         Organization organization = organizationManager.getByWildcard(token.getRedirectUrl());
@@ -124,11 +125,11 @@ public abstract class AbstractTicketValidationManager implements TicketValidatio
         try {
 
             if (ticket.isExpired()) {
-                throw new UrlTicketValidateException(token.getTicket() + " 票据超时");
+                throw new TicketExpiredException(token.getTicket() + " ticket expired");
             }
 
             if (!StringUtils.equals(ticket.getOrganization().getWildcard(), organization.getWildcard())) {
-                throw new UrlTicketValidateException(token.getTicket() + " 票据的机构匹配");
+                throw new UrlTicketValidateException(token.getTicket() + " ticket not match");
             }
 
         } finally {

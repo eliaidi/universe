@@ -24,6 +24,9 @@ import com.github.dactiv.universe.captcha.entity.ValidResult;
 import com.github.dactiv.universe.captcha.entity.support.SimpleCaptcha;
 import com.github.dactiv.universe.captcha.entity.support.ValidResultSupport;
 import com.github.dactiv.universe.captcha.exception.CaptchaException;
+import com.github.dactiv.universe.captcha.exception.CaptchaNotFoundException;
+import com.github.dactiv.universe.captcha.exception.CaptchaNotMatchException;
+import com.github.dactiv.universe.captcha.exception.CaptchaTimeoutException;
 import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
 
 import java.io.ByteArrayOutputStream;
@@ -134,14 +137,22 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
 
         try {
 
-            Captcha captcha = get(id);
-
-            if (captcha == null || System.currentTimeMillis() - captcha.getCreationTime().getTime() > expiredTime) {
-                throw new CaptchaException("验证码超时");
+            if (code == null || "".equals(code)) {
+                throw new CaptchaException("input captcha can't be null or \"\" ");
             }
 
-            if (code == null || !captcha.getCode().equals(code.toUpperCase()) ) {
-                throw new CaptchaException("验证码不正确");
+            Captcha captcha = get(id);
+
+            if (captcha == null) {
+                throw new CaptchaNotFoundException("id: [" + id + "] captcha not found.");
+            }
+
+            if (System.currentTimeMillis() - captcha.getCreationTime().getTime() > expiredTime) {
+                throw new CaptchaTimeoutException("id: [" + id + "] captcha time out.");
+            }
+            String input = code.toUpperCase();
+            if (!captcha.getCode().equals(input) ) {
+                throw new CaptchaNotMatchException("id: [" + id + "] captcha not match, input is :" + input + ", cache is :" + captcha.getCode());
             }
 
             delete(id);

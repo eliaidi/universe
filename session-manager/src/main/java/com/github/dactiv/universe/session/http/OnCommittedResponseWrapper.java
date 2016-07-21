@@ -228,7 +228,7 @@ abstract class OnCommittedResponseWrapper extends HttpServletResponseWrapper {
             onResponseCommitted();
             disableOnResponseCommitted();
         } else if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("disableOnCommitted 为 false 不触发未 onResponseCommitted 事件");
+            LOGGER.debug("disableOnCommitted is false, not trigger onResponseCommitted 事件");
         }
     }
 
