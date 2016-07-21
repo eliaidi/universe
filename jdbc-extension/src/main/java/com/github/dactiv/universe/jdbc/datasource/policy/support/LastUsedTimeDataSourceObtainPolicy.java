@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.dactiv.universe.jdbc.datasource.support;
+package com.github.dactiv.universe.jdbc.datasource.policy.support;
 
-import com.github.dactiv.universe.jdbc.datasource.DataSourceKey;
-import com.github.dactiv.universe.jdbc.datasource.DataSourceObtainPolicy;
+import com.github.dactiv.universe.jdbc.datasource.policy.DataSourceKey;
+import com.github.dactiv.universe.jdbc.datasource.policy.DataSourceObtainPolicy;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * 按使用次数获取数据源政策
+ * 按最后使用时间获取的数据源政策
  *
  * @author maurice
  */
-public class UsedDataSourceObtainPolicy extends DataSourceObtainPolicy {
+public class LastUsedTimeDataSourceObtainPolicy extends DataSourceObtainPolicy {
 
     /**
      * 获取从库数据源 key 对象

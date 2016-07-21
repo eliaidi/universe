@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.dactiv.universe.jdbc.datasource;
+package com.github.dactiv.universe.jdbc.datasource.policy;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;

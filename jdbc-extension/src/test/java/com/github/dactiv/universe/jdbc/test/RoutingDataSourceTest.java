@@ -15,7 +15,7 @@
  */
 package com.github.dactiv.universe.jdbc.test;
 
-import com.github.dactiv.universe.jdbc.datasource.UniverseDataSource;
+import com.github.dactiv.universe.jdbc.datasource.RoutingDataSource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ import java.sql.SQLException;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/applicationContext.xml")
-public class UniverseDataSourceTest {
+public class RoutingDataSourceTest {
 
     @Autowired
     private DataSource dataSource;
@@ -44,7 +44,7 @@ public class UniverseDataSourceTest {
 
     @Test
     public void testGetConnection() throws SQLException {
-        UniverseDataSource.setRead();
+        RoutingDataSource.setRead();
         for (int i = 0,t = 1; i < 30; i++) {
             Connection connection = dataSource.getConnection();
             Assert.assertTrue(connection.toString().contains("universe_s_0" + (t++)));
@@ -54,7 +54,7 @@ public class UniverseDataSourceTest {
             connection.close();
         }
 
-        UniverseDataSource.setWrite();
+        RoutingDataSource.setWrite();
         for (int i = 0; i < 10; i++) {
             Connection connection = dataSource.getConnection();
             Assert.assertTrue(connection.toString().contains("universe_master"));

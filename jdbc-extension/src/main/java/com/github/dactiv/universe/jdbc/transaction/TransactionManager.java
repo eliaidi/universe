@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.dactiv.universe.jdbc.datasource;
+package com.github.dactiv.universe.jdbc.transaction;
 
+import com.github.dactiv.universe.jdbc.datasource.RoutingDataSource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 
@@ -23,7 +24,7 @@ import org.springframework.transaction.TransactionDefinition;
  *
  * @author maurice
  */
-public class UniverseDataSourceTransactionManager extends DataSourceTransactionManager {
+public class TransactionManager extends DataSourceTransactionManager {
 
     /**
      * 从写父类方法，在开启事务前，把当前读写状态设置
@@ -31,7 +32,7 @@ public class UniverseDataSourceTransactionManager extends DataSourceTransactionM
     @Override
     protected void doBegin(Object transaction, TransactionDefinition definition) {
         if (!definition.isReadOnly()) {
-            UniverseDataSource.setWrite();
+            RoutingDataSource.setWrite();
         }
         super.doBegin(transaction, definition);
     }

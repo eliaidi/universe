@@ -21,7 +21,7 @@ package com.github.dactiv.universe.jdbc.datasource;
  *
  * @author maurice
  */
-public enum ReadWriteType {
+public enum StatementType {
     /**
      * 只读操作
      */

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.dactiv.universe.jdbc.datasource.support;
+package com.github.dactiv.universe.jdbc.datasource.policy.support;
 
-import com.github.dactiv.universe.jdbc.datasource.DataSourceKey;
-import com.github.dactiv.universe.jdbc.datasource.DataSourceObtainPolicy;
+import com.github.dactiv.universe.jdbc.datasource.policy.DataSourceKey;
+import com.github.dactiv.universe.jdbc.datasource.policy.DataSourceObtainPolicy;
 
 import java.util.List;
 import java.util.Random;

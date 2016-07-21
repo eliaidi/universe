@@ -43,7 +43,7 @@
         <property name="driverClassName" value="org.h2.Driver" />
     </bean>
 
-    <bean id="dataSource" class="com.github.dactiv.universe.jdbc.datasource.UniverseDataSource" init-method="init">
+    <bean id="dataSource" class="com.github.dactiv.universe.jdbc.datasource.RoutingDataSource" init-method="init">
         <property name="defaultTargetDataSource" ref="masterDataSource" />
         <property name="targetDataSources">
             <map>
@@ -58,7 +58,7 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <bean id="transactionManager" class="com.github.dactiv.universe.jdbc.datasource.UniverseDataSourceTransactionManager">
+    <bean id="transactionManager" class="com.github.dactiv.universe.jdbc.transaction.TransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
 
