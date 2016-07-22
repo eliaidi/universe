@@ -16,6 +16,8 @@
 package com.github.dactiv.universe.jdbc.datasource;
 
 
+import com.github.dactiv.universe.jdbc.WrapperAdapter;
+
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -26,7 +28,7 @@ import java.util.logging.Logger;
  *
  * @author maurice
  */
-public abstract class AbstractDataSource implements DataSource {
+public abstract class AbstractDataSource extends WrapperAdapter implements DataSource {
 
     private PrintWriter logWriter = new PrintWriter(System.out);
 
@@ -60,20 +62,6 @@ public abstract class AbstractDataSource implements DataSource {
     @Override
     public void setLogWriter(PrintWriter pw) throws SQLException {
         this.logWriter = pw;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface.isInstance(this)) {
-            return (T) this;
-        }
-        throw new SQLException("DataSource of currentType [" + getClass().getName() + "] cannot be unwrapped as [" + iface.getName() + "]");
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return iface.isInstance(this);
     }
 
     @Override
