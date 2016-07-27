@@ -21,6 +21,7 @@ import com.github.dactiv.universe.jdbc.WrapperAdapter;
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
 /**
@@ -45,7 +46,7 @@ public abstract class AbstractDataSource extends WrapperAdapter implements DataS
      */
     @Override
     public void setLoginTimeout(int timeout) throws SQLException {
-        throw new UnsupportedOperationException("setLoginTimeout");
+        throw new SQLFeatureNotSupportedException("setLoginTimeout");
     }
 
     /**
