@@ -91,15 +91,3 @@ maven:
       <artifactId>session-manager</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-
-## jdbc-extension
-
-jdbc-extension 是对 jdbc 层的一个封装，主要负责读写分离，分表分库等操作。
-
-maven:
-
-    <dependency>
-      <groupId>com.github.dactiv.universe</groupId>
-      <artifactId>jdbc-extension</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
