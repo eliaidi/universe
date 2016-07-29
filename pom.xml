@@ -46,6 +46,7 @@
         <module>spring-mvc-extension</module>
         <module>freemarker-extension</module>
         <module>session-manager</module>
+        <module>jdbc-extension</module>
     </modules>
 
     <build>
