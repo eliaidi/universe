@@ -1,6 +1,7 @@
 package com.github.dactiv.universe.session.http.cookie.support;
 
 import com.github.dactiv.universe.session.http.cookie.CookieSerializer;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
@@ -34,6 +35,8 @@ public class SimpleCookieSerializer implements CookieSerializer {
     private Pattern domainNamePattern;
     // jvm 路由地址
     private String jvmRoute;
+    // 是否使用 base64 加解密 cookie 值
+    private boolean useBase64Encoding = false;
 
     @Override
     public void writeCookieValue(CookieValue cookieValue) {
@@ -43,7 +46,7 @@ public class SimpleCookieSerializer implements CookieSerializer {
         String requestedCookieValue = cookieValue.getCookieValue();
         String actualCookieValue = this.jvmRoute == null ? requestedCookieValue : requestedCookieValue + this.jvmRoute;
 
-        Cookie sessionCookie = new Cookie(this.cookieName, actualCookieValue);
+        Cookie sessionCookie = new Cookie(this.cookieName, this.useBase64Encoding ? encodeCookieValue(actualCookieValue) : actualCookieValue);
         sessionCookie.setSecure(isSecureCookie(request));
         sessionCookie.setPath(getCookiePath(request));
         String domainName = getDomainName(request);
@@ -72,7 +75,7 @@ public class SimpleCookieSerializer implements CookieSerializer {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (this.cookieName.equals(cookie.getName())) {
-                    String sessionId = cookie.getValue();
+                    String sessionId = this.useBase64Encoding ? decodeCookieValue(cookie.getValue()) : cookie.getValue();
                     if (sessionId == null) {
                         continue;
                     }
@@ -84,6 +87,34 @@ public class SimpleCookieSerializer implements CookieSerializer {
             }
         }
         return matchingCookieValues;
+    }
+
+    /**
+     * 解密 base64
+     *
+     * @param encodedCookieValue 值
+     *
+     * @return 解密后的值
+     */
+    private String decodeCookieValue(String encodedCookieValue) {
+        try {
+            byte[] decodedCookieBytes = Base64.decodeBase64(encodedCookieValue.getBytes());
+            return new String(decodedCookieBytes);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 加密 base64
+     *
+     * @param cookieValue 值
+     *
+     * @return 加密后的值
+     */
+    private String encodeCookieValue(String cookieValue) {
+        byte[] encodedCookieBytes = Base64.encodeBase64(cookieValue.getBytes());
+        return new String(encodedCookieBytes);
     }
 
     /**
@@ -182,6 +213,15 @@ public class SimpleCookieSerializer implements CookieSerializer {
      */
     public void setJvmRoute(String jvmRoute) {
         this.jvmRoute = "." + jvmRoute;
+    }
+
+    /**
+     * 是否使用 base64 加解密 cookie 值
+     *
+     * @param useBase64Encoding true 为是，否则 false
+     */
+    public void setUseBase64Encoding(boolean useBase64Encoding) {
+        this.useBase64Encoding = useBase64Encoding;
     }
 
     /**

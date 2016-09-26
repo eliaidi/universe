@@ -235,7 +235,7 @@ public class RedisSessionRepository implements SessionRepository<RedisSessionRep
      * @param id session id
      * @param allowExpired 是否支持获取超时的 session，true 为是，否则 false
      *
-     * @return
+     * @return RedisSession
      */
     private RedisSession getSession(String id, boolean allowExpired) {
         Map<Object, Object> entries = getSessionBoundHashOperations(id).entries();
