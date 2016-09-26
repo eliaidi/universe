@@ -17,7 +17,7 @@
 package com.github.dactiv.universe.shiro.filter;
 
 import com.github.dactiv.universe.captcha.entity.ValidResult;
-import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
+import com.github.dactiv.universe.captcha.generator.JpegImgMultiCaptchaGenerator;
 import com.github.dactiv.universe.captcha.support.HttpSessionCaptchaManager;
 import com.github.dactiv.universe.shiro.exception.CaptchaException;
 import com.github.dactiv.universe.shiro.filter.captcha.DisplayCaptchaCondition;
@@ -202,7 +202,7 @@ public class CaptchaAuthenticationFilter extends FormAuthenticationFilter implem
     public void afterPropertiesSet() throws Exception {
         if(httpSessionCaptchaManager == null) {
             httpSessionCaptchaManager = new HttpSessionCaptchaManager();
-            httpSessionCaptchaManager.setCaptchaGenerator(new JpegImgCaptchaGenerator());
+            httpSessionCaptchaManager.setCaptchaGenerator(new JpegImgMultiCaptchaGenerator());
             httpSessionCaptchaManager.setExpiredTime(DEFAULT_CAPTCHA_EXPIRED_TIME);
         }
     }

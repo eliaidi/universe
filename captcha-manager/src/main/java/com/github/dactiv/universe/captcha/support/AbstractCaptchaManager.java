@@ -27,7 +27,7 @@ import com.github.dactiv.universe.captcha.exception.CaptchaException;
 import com.github.dactiv.universe.captcha.exception.CaptchaNotFoundException;
 import com.github.dactiv.universe.captcha.exception.CaptchaNotMatchException;
 import com.github.dactiv.universe.captcha.exception.CaptchaTimeoutException;
-import com.github.dactiv.universe.captcha.generator.JpegImgCaptchaGenerator;
+import com.github.dactiv.universe.captcha.generator.JpegImgMultiCaptchaGenerator;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
@@ -46,7 +46,7 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
     /**
      * 验证码生成器
      */
-    private CaptchaGenerator captchaGenerator = new JpegImgCaptchaGenerator();
+    private CaptchaGenerator captchaGenerator = new JpegImgMultiCaptchaGenerator();
     /**
      * 当前验证码
      */

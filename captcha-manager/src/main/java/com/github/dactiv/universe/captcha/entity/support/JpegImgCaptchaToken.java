@@ -30,29 +30,36 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
     /**
      * 默认字体大小
      */
-    public static final Integer DEFAULT_FONT_SIZE = 22;
+    public static final int DEFAULT_FONT_SIZE = 22;
     /**
      * 默认验证码图片宽度
      */
-    public static final Integer DEFAULT_WIDTH = 96;
+    public static final int DEFAULT_WIDTH = 96;
     /**
      * 默认验证码图片高度
      */
-    public static final Integer DEFAULT_HEIGHT = 44;
+    public static final int DEFAULT_HEIGHT = 44;
 
     /**
      * 默认验证码长度
      */
-    public static final Integer DEFAULT_LENGTH = 4;
+    public static final int DEFAULT_LENGTH = 4;
 
+    /**
+     * 默认图片循环时间秒
+     */
+    public static final int DEFAULT_LOOP_SECOND = 10;
+
+    // 图片循环时间秒
+    private int loopSecond = DEFAULT_LOOP_SECOND;
     // 图片宽度
-    private Integer width = DEFAULT_WIDTH;
+    private int width = DEFAULT_WIDTH;
     // 图片高度
-    private Integer height = DEFAULT_HEIGHT;
+    private int height = DEFAULT_HEIGHT;
     // 字体大小
-    private Integer fontSize = DEFAULT_FONT_SIZE;
+    private int fontSize = DEFAULT_FONT_SIZE;
     // 验证码长度
-    private Integer length = DEFAULT_LENGTH;
+    private int length = DEFAULT_LENGTH;
     // 验证码字体
     private String fontFamily = DEFAULT_FONT_FAMILY;
 
@@ -65,13 +72,15 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
     /**
      * jpeg 图片验证码令牌
      *
+     * @param loopSecond 图片循环时间秒
      * @param width 图片宽度
      * @param height 图片高度
      * @param fontSize 字体大小
      * @param length 验证码长度
      * @param fontFamily 验证码字体
      */
-    public JpegImgCaptchaToken(Integer width, Integer height, Integer fontSize, Integer length, String fontFamily) {
+    public JpegImgCaptchaToken(int loopSecond, int width, int height, int fontSize, int length, String fontFamily) {
+        this.loopSecond = loopSecond;
         this.width = width;
         this.height = height;
         this.fontSize = fontSize;
@@ -80,11 +89,29 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
     }
 
     /**
+     * 获取图片循环时间秒
+     *
+     * @return 图片循环时间秒
+     */
+    public int getLoopSecond() {
+        return loopSecond;
+    }
+
+    /**
+     * 设置图片循环时间秒
+     *
+     * @param loopSecond 图片循环时间秒
+     */
+    public void setLoopSecond(int loopSecond) {
+        this.loopSecond = loopSecond;
+    }
+
+    /**
      * 获取图片宽度
      *
      * @return 宽度
      */
-    public Integer getWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -93,7 +120,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @param width 宽度
      */
-    public void setWidth(Integer width) {
+    public void setWidth(int width) {
         this.width = width;
     }
 
@@ -102,7 +129,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @return 高度
      */
-    public Integer getHeight() {
+    public int getHeight() {
         return height;
     }
 
@@ -111,7 +138,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @param height 高度
      */
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -120,7 +147,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @return 字体大小
      */
-    public Integer getFontSize() {
+    public int getFontSize() {
         return fontSize;
     }
 
@@ -129,7 +156,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @param fontSize 字体大小
      */
-    public void setFontSize(Integer fontSize) {
+    public void setFontSize(int fontSize) {
         this.fontSize = fontSize;
     }
 
@@ -138,7 +165,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @return 验证码长度
      */
-    public Integer getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -147,7 +174,7 @@ public class JpegImgCaptchaToken extends CaptchaTokenSupport {
      *
      * @param length 验证码长度
      */
-    public void setLength(Integer length) {
+    public void setLength(int length) {
         this.length = length;
     }
 
