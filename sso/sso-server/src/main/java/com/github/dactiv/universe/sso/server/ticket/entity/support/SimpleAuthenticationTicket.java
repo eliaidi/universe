@@ -25,7 +25,7 @@ import org.apache.shiro.authc.AuthenticationToken;
  *
  * @author maurice
  */
-public class SimpleAuthenticationTicket extends AbstractTicket implements AuthenticationTicket {
+public class SimpleAuthenticationTicket extends OrganizationTicket implements AuthenticationTicket {
 
     // 认证成功的当事人（用户）
     private Object principal;

@@ -36,6 +36,13 @@ public interface Ticket extends IdEntity {
     boolean isExpired();
 
     /**
+     * 设置超时时间
+     *
+     * @param expiredTime 超时时间
+     */
+    void setExpiredTime(long expiredTime);
+
+    /**
      * 获取创建时间
      *
      * @return 创建时间

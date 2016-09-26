@@ -27,7 +27,12 @@ import java.util.Date;
  *
  * @author maurice
  */
-public abstract class AbstractTicket extends SimpleIdEntity implements Ticket {
+public class SimpleTicket extends SimpleIdEntity implements Ticket {
+
+    /**
+     * 默认超时时间， 默认10分钟
+     */
+    public final static long DEFAULT_EXPIRED_TIME = 600000;
 
     // 最后一次使用时间
     private Date lastTimeUsed;
@@ -37,27 +42,35 @@ public abstract class AbstractTicket extends SimpleIdEntity implements Ticket {
     private Date creationTime;
     // 使用次数
     private int countOfUses;
-    // 机构信息
-    private Organization organization;
+    // 超时时间
+    private long expiredTime = DEFAULT_EXPIRED_TIME;
 
     /**
      * 抽象票据实现
      */
-    public AbstractTicket() {
+    public SimpleTicket() {
 
     }
 
     /**
      * 抽象票据实现
      *
-     * @param id           id 值
-     * @param organization 对应的机构信息
+     * @param id id 值
      */
-    public AbstractTicket(Object id, Organization organization) {
+    public SimpleTicket(Object id) {
         super(id);
         this.creationTime = new Date();
         this.lastTimeUsed = new Date();
-        this.organization = organization;
+    }
+
+    /**
+     * 设置超时时间
+     *
+     * @param expiredTime 超时时间
+     */
+    @Override
+    public void setExpiredTime(long expiredTime) {
+        this.expiredTime = expiredTime;
     }
 
     /**
@@ -143,15 +156,7 @@ public abstract class AbstractTicket extends SimpleIdEntity implements Ticket {
      */
     @Override
     public boolean isExpired() {
-        return this.organization.getExpirationPolicy().isExpired(this);
+        return System.currentTimeMillis() - this.creationTime.getTime() > expiredTime;
     }
 
-    /**
-     * 获取机构信息
-     *
-     * @return 机构信息
-     */
-    public Organization getOrganization() {
-        return organization;
-    }
 }
