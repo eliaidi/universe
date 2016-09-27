@@ -19,6 +19,8 @@ package com.github.dactiv.universe.sso.server;
 import com.github.dactiv.universe.sso.server.ticket.TicketManager;
 import com.github.dactiv.universe.sso.server.ticket.entity.AuthenticationTicket;
 import com.github.dactiv.universe.shiro.filter.CaptchaAuthenticationFilter;
+import com.github.dactiv.universe.sso.server.ticket.entity.support.IpSessionTicket;
+import com.github.dactiv.universe.sso.server.utils.HttpServletUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -28,6 +30,8 @@ import org.apache.shiro.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Sso 认证 filter
@@ -39,7 +43,7 @@ public class SsoAuthenticationFilter extends CaptchaAuthenticationFilter {
     /**
      * 默认登录票据存储在 session 中的属性名称
      */
-    public final static String DEFAULT_LOGIN_TICKET_SESSION_ATTRIBUTE_NAME = "loginTicket";
+    public final static String DEFAULT_LOGIN_TICKET_SESSION_ATTRIBUTE_NAME = "LOGIN_TICKET";
     /**
      * 默认登录 form 中提交的票据参数名
      */
@@ -87,7 +91,7 @@ public class SsoAuthenticationFilter extends CaptchaAuthenticationFilter {
 
         if (!checkLoginTicket(request)) {
 
-            Session session = SecurityUtils.getSubject().getSession();
+            HttpSession session = WebUtils.toHttp(request).getSession();
             session.setAttribute(loginTicketSessionAttributeName, ticketManager.create(loginTicketPrefix));
 
             String url = getLoginUrl() + "?" + redirectUrlParamName + "=" + getRedirectUrl(request);
@@ -114,7 +118,7 @@ public class SsoAuthenticationFilter extends CaptchaAuthenticationFilter {
             AuthenticationTicket ticket = ticketManager.createAuthenticationTicket(url, principal, token);
 
             ticketManager.save(ticket);
-            subject.getSession().setAttribute(authenticationTicketSessionAttributeName, ticket);
+            WebUtils.toHttp(request).getSession().setAttribute(authenticationTicketSessionAttributeName, ticket);
             WebUtils.issueRedirect(request, response, url + "?" + redirectTicketParamName + "=" + ticket);
 
             return Boolean.FALSE;
@@ -130,7 +134,7 @@ public class SsoAuthenticationFilter extends CaptchaAuthenticationFilter {
      * @return 是返回 true，否则返回 false
      */
     private boolean isSsoLogin(ServletRequest request) {
-        return StringUtils.isNotEmpty(getRedirectUrl(request)) && StringUtils.isNotEmpty(getLoginLoginTicket(request));
+        return StringUtils.isNotEmpty(getRedirectUrl(request)) && StringUtils.isNotEmpty(getLoginTicket(request));
     }
 
     /**
@@ -140,10 +144,28 @@ public class SsoAuthenticationFilter extends CaptchaAuthenticationFilter {
      * @return 一致返回 true，否则 false
      */
     protected boolean checkLoginTicket(ServletRequest request) {
-        final String sessionLoginTicket = getLoginLoginTicket(request);
+        final String sessionLoginTicket = getLoginTicket(request);
         final String requestLoginTicket = getSessionLoginTicket();
 
-        return StringUtils.equals(sessionLoginTicket, requestLoginTicket);
+        if (!StringUtils.equals(sessionLoginTicket, requestLoginTicket)) {
+            return false;
+        }
+
+        IpSessionTicket ipSessionTicket = ticketManager.get(requestLoginTicket, IpSessionTicket.class);
+
+        String ipAddress = ipSessionTicket.getIpAddress();
+        String sessionId = ipSessionTicket.getSessionId();
+
+        HttpServletRequest httpRequest = WebUtils.toHttp(request);
+        String currentSessionId = httpRequest.getSession().getId();
+
+        if (ipSessionTicket.isExpired() ||
+                !StringUtils.equals(ipAddress, HttpServletUtils.getIpAddress(httpRequest)) ||
+                !StringUtils.equals(currentSessionId, sessionId)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -152,7 +174,7 @@ public class SsoAuthenticationFilter extends CaptchaAuthenticationFilter {
      * @param request servlet request
      * @return 存在返回票据信息，否则返回 null
      */
-    public String getLoginLoginTicket(ServletRequest request) {
+    public String getLoginTicket(ServletRequest request) {
         return WebUtils.getCleanParam(request, loginTicketParamName);
     }
 
