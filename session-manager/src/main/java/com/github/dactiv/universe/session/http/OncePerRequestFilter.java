@@ -31,7 +31,6 @@ abstract class OncePerRequestFilter implements Filter{
 
     private String alreadyFilteredAttributeName = getClass().getName().concat(ALREADY_FILTERED_SUFFIX);
 
-
     public final void doFilter(ServletRequest request, ServletResponse response,
                                FilterChain filterChain) throws ServletException, IOException {
 
@@ -43,10 +42,8 @@ abstract class OncePerRequestFilter implements Filter{
         boolean hasAlreadyFilteredAttribute = request.getAttribute(this.alreadyFilteredAttributeName) != null;
 
         if (hasAlreadyFilteredAttribute) {
-
             filterChain.doFilter(request, response);
-        }
-        else {
+        } else {
             request.setAttribute(this.alreadyFilteredAttributeName, Boolean.TRUE);
             try {
                 doFilterInternal(httpRequest, httpResponse, filterChain);

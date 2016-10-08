@@ -36,14 +36,19 @@ public final class MapSession implements ExpiringSession, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+    /**
+     * 默认超时时间
+     */
 	public static final int DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS = 1800;
-
+    // 主键 id
     private String id;
+    // 属性对象
     private Map<String, Object> sessionAttrs = new HashMap<String, Object>();
+    // 创建时间
     private long creationTime = System.currentTimeMillis();
+    // 最后访问时间
     private long lastAccessedTime = this.creationTime;
-
+    // 超时时间
     private int maxInactiveInterval = DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
 
     /**

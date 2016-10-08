@@ -18,7 +18,7 @@ package com.github.dactiv.universe.session;
 import java.util.Set;
 
 /**
- * 渠道专用 session
+ * session 接口
  *
  * @author maurice
  */

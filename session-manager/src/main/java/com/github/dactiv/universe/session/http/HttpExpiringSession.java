@@ -34,11 +34,21 @@ import java.util.Set;
 @SuppressWarnings("deprecation")
 public class HttpExpiringSession<S extends ExpiringSession> implements HttpSession {
 
+    // session 实现
     private S session;
+    // servlet context
     private final ServletContext servletContext;
+    // 是否超时，true 为是，否则 false
     private boolean invalidated;
+    // 是否新创建，true 为是，否则 false
     private boolean old;
 
+    /**
+     * http 超时 session 实现
+     *
+     * @param session session 实现
+     * @param servletContext servlet context
+     */
     public HttpExpiringSession(S session, ServletContext servletContext) {
         this.session = session;
         this.servletContext = servletContext;

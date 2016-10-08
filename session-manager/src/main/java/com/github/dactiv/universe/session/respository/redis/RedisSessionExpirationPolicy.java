@@ -22,7 +22,6 @@ public class RedisSessionExpirationPolicy {
     private final static Logger LOGGER = LoggerFactory.getLogger(RedisSessionExpirationPolicy.class);
     // redis 操作类
     private final RedisOperations<Object, Object> redis;
-
     // redis sesssion 存储库
     private final RedisSessionRepository redisSession;
 

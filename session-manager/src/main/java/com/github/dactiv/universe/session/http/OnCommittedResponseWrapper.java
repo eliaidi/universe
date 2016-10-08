@@ -37,9 +37,7 @@ abstract class OnCommittedResponseWrapper extends HttpServletResponseWrapper {
     // 是否开启 onCommitted 时间
     private boolean disableOnCommitted;
 
-    /**
-     * 内容长度
-     */
+    // 内容长度
     private long contentLength;
 
     /**
