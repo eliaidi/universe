@@ -39,7 +39,7 @@ public interface HttpSessionManager {
      *
      * @param request HttpServletRequest
      *
-     * @return
+     * @return session id map 集合
      */
     Map<String, String> getSessionIds(HttpServletRequest request);
 

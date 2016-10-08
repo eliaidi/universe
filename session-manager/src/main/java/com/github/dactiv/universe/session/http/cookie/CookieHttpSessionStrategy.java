@@ -20,17 +20,34 @@ import java.util.regex.Pattern;
  */
 public class CookieHttpSessionStrategy implements MultiHttpSessionStrategy, HttpSessionManager {
 
+    /**
+     * 默认存储在 session 的 session id 属性值
+     */
     private static final String SESSION_IDS_WRITTEN_ATTR = CookieHttpSessionStrategy.class.getName().concat(".SESSIONS_WRITTEN_ATTR");
-
+    /**
+     * 默认写入 cookie 的分隔符
+     */
+    private static final String DEFAULT_DELIMITER = " ";
+    /**
+     * 默认别名值
+     */
     public static final String DEFAULT_ALIAS = "0";
-
+    /**
+     * 默认 session 参数别名
+     */
     public static final String DEFAULT_SESSION_ALIAS_PARAM_NAME = "_SESSION";
-
+    /**
+     * 别名正则表达式
+     */
     private static final Pattern ALIAS_PATTERN = Pattern.compile("^[\\w-]{1,50}$");
-
+    // session 参数别名
     private String sessionParam = DEFAULT_SESSION_ALIAS_PARAM_NAME;
-
+    // cookie 序列化类
     private CookieSerializer cookieSerializer = new SimpleCookieSerializer();
+    // 反序列化分隔符
+    private String deserializationDelimiter = DEFAULT_DELIMITER;
+    // 序列化分隔符
+    private String serializationDelimiter = DEFAULT_DELIMITER;
 
     @Override
     public String getCurrentSessionAlias(HttpServletRequest request) {
@@ -50,20 +67,21 @@ public class CookieHttpSessionStrategy implements MultiHttpSessionStrategy, Http
     @Override
     public Map<String, String> getSessionIds(HttpServletRequest request) {
         List<String> cookieValues = this.cookieSerializer.readCookieValues(request);
-        String sessionCookieValue = cookieValues.isEmpty() ? "" : cookieValues.iterator().next();
         Map<String, String> result = new LinkedHashMap<String, String>();
-        StringTokenizer tokens = new StringTokenizer(sessionCookieValue, " ");
-        if (tokens.countTokens() == 1) {
-            result.put(DEFAULT_ALIAS, tokens.nextToken());
-            return result;
-        }
-        while (tokens.hasMoreTokens()) {
-            String alias = tokens.nextToken();
-            if (!tokens.hasMoreTokens()) {
-                break;
+        for (String cookieValue : cookieValues) {
+            StringTokenizer tokens = new StringTokenizer(cookieValue, this.deserializationDelimiter);
+            if (tokens.countTokens() == 1) {
+                result.put(DEFAULT_ALIAS, tokens.nextToken());
+                return result;
             }
-            String id = tokens.nextToken();
-            result.put(alias, id);
+            while (tokens.hasMoreTokens()) {
+                String alias = tokens.nextToken();
+                if (!tokens.hasMoreTokens()) {
+                    break;
+                }
+                String id = tokens.nextToken();
+                result.put(alias, id);
+            }
         }
         return result;
     }
@@ -177,7 +195,7 @@ public class CookieHttpSessionStrategy implements MultiHttpSessionStrategy, Http
     }
 
     /**
-     * 获取所有 session id
+     * 从 session 中获取所有 session id
      *
      * @param request HttpServletRequest
      *
@@ -214,9 +232,9 @@ public class CookieHttpSessionStrategy implements MultiHttpSessionStrategy, Http
             String id = entry.getValue();
 
             buffer.append(alias);
-            buffer.append(" ");
+            buffer.append(this.serializationDelimiter);
             buffer.append(id);
-            buffer.append(" ");
+            buffer.append(this.serializationDelimiter);
         }
         buffer.deleteCharAt(buffer.length() - 1);
         return buffer.toString();
@@ -249,6 +267,25 @@ public class CookieHttpSessionStrategy implements MultiHttpSessionStrategy, Http
             String alias = getCurrentSessionAlias(this.request);
             return CookieHttpSessionStrategy.this.encodeURL(url, alias);
         }
+    }
+
+
+    /**
+     * 设置反序列化分隔符
+     *
+     * @param delimiter 反序列化分隔符
+     */
+    public void setDeserializationDelimiter(String delimiter) {
+        this.deserializationDelimiter = delimiter;
+    }
+
+    /**
+     * 设置序列化分隔符
+     *
+     * @param delimiter 序列化分隔符
+     */
+    public void setSerializationDelimiter(String delimiter) {
+        this.serializationDelimiter = delimiter;
     }
 
     /**
