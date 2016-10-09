@@ -17,13 +17,13 @@
 package com.github.dactiv.universe.map.validation;
 
 import com.github.dactiv.universe.map.validation.exception.MappingMetadataNotFoundException;
-import com.github.dactiv.universe.map.validation.exception.ValidationException;
+import com.github.dactiv.universe.map.validation.exception.ValidatorNotFoundException;
+import com.github.dactiv.universe.map.validation.mapping.Dom4jConstraintElement;
 import com.github.dactiv.universe.map.validation.mapping.SimpleConstraint;
 import com.github.dactiv.universe.map.validation.mapping.SimpleMappingKey;
 import com.github.dactiv.universe.map.validation.mapping.SimpleMappingMetadata;
 import com.github.dactiv.universe.map.validation.valid.*;
 import com.github.dactiv.universe.map.validation.valid.error.SimpleValidError;
-import com.github.dactiv.universe.map.validation.exception.ValidatorNotFoundException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -31,7 +31,9 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -39,9 +41,10 @@ import java.util.*;
  *
  * @author maurice
  */
+@SuppressWarnings("unchecked")
 public class MapValidation {
 
-    private static Logger logger = LoggerFactory.getLogger(MapValidation.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapValidation.class);
 
     /**
      * 默认的 i18n 配置文件
@@ -55,9 +58,9 @@ public class MapValidation {
 
     // i18n 配置文件
     private Properties properties = new Properties();
-    // 映射 xml 文件的元数据说明
+    // 映射 xml 文件或类实体的元数据说明
     private Map<String, MappingMetadata> mappingMetadataMap = new HashMap<String, MappingMetadata>();
-    // 验证器 map
+    // key 形式的验证器 map
     private Map<String, Validator> validatorMap = new HashMap<String, Validator>();
     // dom4j xml reader 用于读取 xml
     private SAXReader reader = new SAXReader();
@@ -74,8 +77,8 @@ public class MapValidation {
     /**
      * 初始化验证器
      */
-    private void initValidatorMap() {
-        validatorMap.put(QequiredValidator.NAME, new QequiredValidator());
+    protected void initValidatorMap() {
+        validatorMap.put(RequiredValidator.NAME, new RequiredValidator());
         validatorMap.put(LengthValidator.NAME, new LengthValidator());
         validatorMap.put(NumberValidator.NAME, new NumberValidator());
         validatorMap.put(EmailValidator.NAME, new EmailValidator());
@@ -109,6 +112,15 @@ public class MapValidation {
     }
 
     /**
+     * 获取自定义验证器
+     *
+     * @return 自定义验证器
+     */
+    public Map<String, Validator> getValidatorMap() {
+        return validatorMap;
+    }
+
+    /**
      * 设置 i18n 国际化配置文件
      *
      * @param is  文件 input stream
@@ -119,6 +131,15 @@ public class MapValidation {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取验证元数据 map
+     *
+     * @return 验证元数据 map
+     */
+    public Map<String, MappingMetadata> getMappingMetadataMap() {
+        return mappingMetadataMap;
     }
 
     /**
@@ -158,14 +179,16 @@ public class MapValidation {
 
             for (Element constraint : constraintElement) {
                 String constraintName = constraint.getName();
-                String defaultMessage = properties.getProperty(DEFAULT_I18N_KEY_PREFIX + constraintName);
+                String defaultMessage = getDefaultMessage(constraintName);
                 String message = constraint.attributeValue("message");
-                constraints.add(new SimpleConstraint(constraintName, message, defaultMessage, constraint));
+                Dom4jConstraintElement element = new Dom4jConstraintElement(constraint);
+                constraints.add(new SimpleConstraint(constraintName, message, defaultMessage, element));
             }
 
             mappingKeys.add(new SimpleMappingKey(name,ailas,constraints));
 
         }
+
         mappingMetadataMap.put(root.attributeValue("name"),new SimpleMappingMetadata(mappingKeys));
 
     }
@@ -180,15 +203,35 @@ public class MapValidation {
      */
     public List<ValidError> valid(Map<String, Object> map, String mapperName) {
 
-        List<ValidError> validateErrors = new ArrayList<ValidError>();
-
         if (!mappingMetadataMap.containsKey(mapperName)) {
             throw new MappingMetadataNotFoundException("[" + mapperName + "] mapper file not found.");
         }
 
         MappingMetadata validateMapper = mappingMetadataMap.get(mapperName);
 
+        List<ValidError> validateErrors = doValid(validateMapper, map);
+
+        if (LOGGER.isDebugEnabled() && validateErrors.size() > 0) {
+            LOGGER.debug("validate " + map + "failure:");
+            for (ValidError ve : validateErrors) {
+                LOGGER.debug("name: " + ve.getName() + ", message:" + ve.getMessage());
+            }
+        }
+
+        return validateErrors;
+    }
+
+    /**
+     * 执行验证
+     *
+     * @param validateMapper 验证映射
+     * @param map 数据对象
+     *
+     * @return 如果验证成功，返回值的 size 为 0，否则 size 大于 0
+     */
+    protected List<ValidError> doValid(MappingMetadata validateMapper, Map<String, Object> map) {
         List<MappingKey> mappingKeys = validateMapper.getKeys();
+        List<ValidError> validateErrors = new ArrayList<ValidError>();
 
         for (MappingKey mappingKey : mappingKeys) {
 
@@ -210,14 +253,17 @@ public class MapValidation {
             }
         }
 
-        if (logger.isDebugEnabled() && validateErrors.size() > 0) {
-            logger.debug("validate " + map + "failure:");
-            for (ValidError ve : validateErrors) {
-                logger.debug("name: " + ve.getName() + ", message:" + ve.getMessage());
-            }
-        }
-
         return validateErrors;
     }
 
+    /**
+     * 获取默认的信息
+     *
+     * @param constraintName 约束名称
+     *
+     * @return 信息
+     */
+    protected String getDefaultMessage(String constraintName) {
+        return properties.getProperty(DEFAULT_I18N_KEY_PREFIX + constraintName);
+    }
 }

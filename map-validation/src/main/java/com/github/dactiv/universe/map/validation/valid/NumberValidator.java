@@ -32,7 +32,7 @@ public class NumberValidator extends AllowsNullValueValidator {
 
     private static final String REGULAR_EXPRESSION = "^(-?[1-9]\\d*\\.?\\d*)|(-?0\\.\\d*[1-9])|(-?[0])|(-?[0]\\.\\d*)$";
 
-    private static final String REGULAR_EXPRESSION_ATTR_NAME = "el";
+    private static final String REGULAR_EXPRESSION_ATTR_NAME = "reg";
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {

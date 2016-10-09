@@ -19,28 +19,19 @@ package com.github.dactiv.universe.map.validation.valid;
 import com.github.dactiv.universe.map.validation.Constraint;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
- * 邮箱验证器
+ * 不能为null或""验证器
  *
  * @author maurice
  */
-public class EmailValidator extends AllowsNullValueValidator {
+public class RequiredValidator extends ContainsKeyValidator{
 
-    public static final String NAME = "email";
-
-    private static final String REG = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
-
-    private static final String REGULAR_EXPRESSION_ATTR_NAME = "reg";
+    public static final String NAME = "required";
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
-        String el = constraint.getElement().attributeValue(REGULAR_EXPRESSION_ATTR_NAME);
-        if (el != null && !"".equals(el)) {
-            return Pattern.compile(el).matcher(value.toString()).matches();
-        }
-        return Pattern.compile(REG).matcher(value.toString()).matches();
+        return value != null && !"".equals(value);
     }
 
     @Override

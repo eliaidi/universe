@@ -16,8 +16,6 @@
 
 package com.github.dactiv.universe.map.validation;
 
-import org.dom4j.Element;
-
 /**
  * 验证约束接口，该接口主要是描述本次验证的约束是什么，如果验证错误时提示的错误信息是什么。
  *
@@ -58,7 +56,7 @@ public interface Constraint {
      *
      * @return 元素对象
      */
-    Element getElement();
+    ConstraintElement getElement();
 
     /**
      * 设置本约束自定义的错误信息

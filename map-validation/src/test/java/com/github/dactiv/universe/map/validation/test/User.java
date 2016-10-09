@@ -15,17 +15,42 @@
  */
 package com.github.dactiv.universe.map.validation.test;
 
+import com.github.dactiv.universe.map.validation.annotation.*;
+
 import java.util.Date;
 
 /**
  * @author maurice
  */
+@Valid
 public class User {
+
+    @Required
+    @Equal("username")
+    @NotEqual("password")
+    @Length(min = 6, max = 16)
+    @RegularExpression("^[a-zA-z][a-zA-Z0-9_]{2,9}$")
     private String username;
+
+    @Required
+    @Length(min = 6, max = 16)
     private String password;
+
+    @Required
+    @Length(max = 16)
     private String nickname;
+
+    @Required
+    @Max(2)
+    @Min(0)
     private Integer state;
+
+    @Email
+    @Length(max = 64)
     private String email;
+
+    @Required
+    @Between(min = "2015-02-05", max = "2015-02-06")
     private Date brithday;
 
     public User() {

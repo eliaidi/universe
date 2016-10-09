@@ -27,16 +27,13 @@ import java.util.regex.Pattern;
  */
 public class RegularExpressionValidator extends AllowsNullValueValidator{
 
-    public static final String NAME = "re";
+    public static final String NAME = "regularExpression";
 
     private static final String ATTR_NAME = "value";
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
         String av = constraint.getElement().attributeValue(ATTR_NAME);
-
-        setMessage(constraint,av);
-
         return Pattern.compile(av).matcher(value.toString()).matches();
     }
 

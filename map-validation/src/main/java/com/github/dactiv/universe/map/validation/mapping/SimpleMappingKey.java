@@ -23,17 +23,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 简单的key 映射信息接口实现
+ * 简单的 key 映射信息接口实现
  *
  * @author maurice
  */
 public class SimpleMappingKey implements MappingKey {
-
+    // 名称
     private String name;
+    // 别名
     private String alias;
-
+    // 约束条件
     private List<Constraint> constraints = new ArrayList<Constraint>();
 
+    /**
+     * 简单的 key 映射信息接口实现
+     *
+     * @param name 名称
+     * @param alias 别名
+     * @param constraints 约束条件
+     */
     public SimpleMappingKey(String name, String alias, List<Constraint> constraints) {
         this.name = name;
         this.alias = alias;

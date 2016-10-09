@@ -20,7 +20,7 @@
     </bean>
 
     <bean id="mapValidAdvisor" class="com.github.dactiv.universe.map.validation.spring.aop.MapValidationSourceAdvisor">
-        <property name="mapValidation" ref="mapValidationBeanFactory" />
+        <property name="entityValidation" ref="mapValidationBeanFactory" />
     </bean>
 
 </beans>

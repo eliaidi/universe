@@ -16,10 +16,10 @@
 
 package com.github.dactiv.universe.map.validation.spring.aop;
 
+import com.github.dactiv.universe.map.validation.EntityValidation;
 import com.github.dactiv.universe.map.validation.ValidError;
 import com.github.dactiv.universe.map.validation.annotation.Valid;
 import com.github.dactiv.universe.map.validation.MapValidation;
-import com.github.dactiv.universe.map.validation.exception.ValidationException;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
 import org.springframework.util.ReflectionUtils;
@@ -43,7 +43,7 @@ import java.util.Map;
 public class MapValidationSourceAdvisor extends StaticMethodMatcherPointcutAdvisor implements MethodBeforeAdvice {
 
     // Map 验证器
-    private MapValidation mapValidation;
+    private EntityValidation entityValidation;
 
     /**
      * 使用 AOP 针对方法带有 Valid 注解参数的方法进行Map验证的 Advisor
@@ -90,43 +90,12 @@ public class MapValidationSourceAdvisor extends StaticMethodMatcherPointcutAdvis
 
             // 如果参数里存在 Valid 注解就进行校验
             if (valid != null) {
-                if (Map.class.isAssignableFrom(o.getClass())) {
-                    valid((Map<String, Object>) o, valid.value());
-                } else {
-                    Map<String, Object> entity = convertObject2Map(o);
-                    valid(entity, valid.value());
-                }
+                entityValidation.valid(o, valid.value());
+            } else {
+                entityValidation.valid(o);
             }
 
         }
-    }
-
-    /**
-     * 将实转换成 map
-     *
-     * @param o 实体对象
-     *
-     * @return 转换后的 map
-     */
-    private Map<String, Object> convertObject2Map(Object o) throws IllegalAccessException, NoSuchMethodException {
-        Map<String, Object> entity = new LinkedHashMap<String, Object>();
-        Class<?> targetClass = o.getClass();
-        while(targetClass != null) {
-            Field[] fields = targetClass.getDeclaredFields();
-            for (Field f : fields) {
-                Object value;
-                Method method = targetClass.getDeclaredMethod("get" + StringUtils.capitalize(f.getName()));
-                if (method != null) {
-                    value = ReflectionUtils.invokeMethod(method, o);
-                } else {
-                    value = ReflectionUtils.getField(f, o);
-                }
-
-                entity.put(f.getName(), value);
-            }
-            targetClass = targetClass.getSuperclass();
-        }
-        return entity;
     }
 
     /**
@@ -149,36 +118,11 @@ public class MapValidationSourceAdvisor extends StaticMethodMatcherPointcutAdvis
     }
 
     /**
-     * 校验 map
+     * 设置实体验证器
      *
-     * @param map        map 对象
-     * @param mapperName 校验文件的映射名称
-     *
-     * @throws org.springframework.validation.BindException
+     * @param entityValidation 实体验证器
      */
-    private void valid(Map<String, Object> map, String mapperName) throws BindException {
-        List<ValidError> errorList = mapValidation.valid(map, mapperName);
-
-        if (errorList.isEmpty()) {
-            return;
-        }
-
-        MapBindingResult mapBindingResult = new MapBindingResult(map, mapperName);
-
-        for (ValidError ve : errorList) {
-            mapBindingResult.addError(new ObjectError(ve.getName(), ve.getMessage()));
-        }
-
-        throw new BindException(mapBindingResult);
+    public void setEntityValidation(EntityValidation entityValidation) {
+        this.entityValidation = entityValidation;
     }
-
-    /**
-     * 设置 map validationg
-     *
-     * @param mapValidation map validationg
-     */
-    public void setMapValidation(MapValidation mapValidation) {
-        this.mapValidation = mapValidation;
-    }
-
 }

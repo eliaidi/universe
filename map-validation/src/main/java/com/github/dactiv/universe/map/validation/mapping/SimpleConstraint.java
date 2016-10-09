@@ -17,6 +17,7 @@
 package com.github.dactiv.universe.map.validation.mapping;
 
 import com.github.dactiv.universe.map.validation.Constraint;
+import com.github.dactiv.universe.map.validation.ConstraintElement;
 import org.dom4j.Element;
 
 /**
@@ -26,12 +27,24 @@ import org.dom4j.Element;
  */
 public class SimpleConstraint implements Constraint {
 
+    // 验证约束名称
     private String name;
+    // 验证约束自定义信息
     private String message;
-    private Element element;
+    // 验证约束默认信息
+    private ConstraintElement element;
+    // 验证约束元素
     private String defaultMessage;
 
-    public SimpleConstraint(String name, String message,String defaultMessage,  Element element) {
+    /**
+     * 简单的验证约束接口
+     *
+     * @param name 验证约束名称
+     * @param message 验证约束自定义信息
+     * @param defaultMessage 验证约束默认信息
+     * @param element 验证约束元素
+     */
+    public SimpleConstraint(String name, String message, String defaultMessage, ConstraintElement element) {
         this.name = name;
         this.message = message;
         this.element = element;
@@ -59,7 +72,7 @@ public class SimpleConstraint implements Constraint {
     }
 
     @Override
-    public Element getElement() {
+    public ConstraintElement getElement() {
         return element;
     }
 

@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class DateValidator extends AllowsNullValueValidator{
 
     public static final String NAME = "date";
-    private static final String EL_ATTR_NAME = "el";
+    private static final String REGULAR_EXPRESSION_ATTR_NAME = "reg";
 
     private List<String> dateRegList = new ArrayList<String>();
 
@@ -50,7 +50,7 @@ public class DateValidator extends AllowsNullValueValidator{
             return true;
         }
 
-        String cel = constraint.getElement().attributeValue(EL_ATTR_NAME);
+        String cel = constraint.getElement().attributeValue(REGULAR_EXPRESSION_ATTR_NAME);
 
         if (cel != null && !"".equals(cel) && Pattern.compile(cel).matcher(value.toString()).matches()) {
             return Boolean.TRUE;

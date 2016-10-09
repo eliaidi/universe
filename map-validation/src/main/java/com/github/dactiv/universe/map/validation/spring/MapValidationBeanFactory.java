@@ -16,6 +16,7 @@
 
 package com.github.dactiv.universe.map.validation.spring;
 
+import com.github.dactiv.universe.map.validation.EntityValidation;
 import com.github.dactiv.universe.map.validation.Validator;
 import com.github.dactiv.universe.map.validation.MapValidation;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class MapValidationBeanFactory implements FactoryBean<MapValidation>, Ini
     private static final Logger LOGGER = LoggerFactory.getLogger(MapValidationBeanFactory.class);
 
     // Map 验证类
-    private MapValidation mapValidation;
+    private EntityValidation entityValidation;
     // Map 映射文件路径
     private Resource[] mapperLocations;
     // 国际化文件路径
@@ -47,12 +48,12 @@ public class MapValidationBeanFactory implements FactoryBean<MapValidation>, Ini
 
     @Override
     public MapValidation getObject() throws Exception {
-        return mapValidation;
+        return entityValidation;
     }
 
     @Override
     public Class<?> getObjectType() {
-        return mapValidation == null ? MapValidation.class : mapValidation.getClass();
+        return entityValidation == null ? MapValidation.class : entityValidation.getClass();
     }
 
     @Override
@@ -62,22 +63,22 @@ public class MapValidationBeanFactory implements FactoryBean<MapValidation>, Ini
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        mapValidation = new MapValidation();
+        entityValidation = new EntityValidation();
 
         if (localization != null) {
             LOGGER.info("setting i18n properties : " + localization.getFilename());
-            mapValidation.setLocalization(localization.getInputStream());
+            entityValidation.setLocalization(localization.getInputStream());
         }
 
         for (Resource mapper : mapperLocations) {
             LOGGER.info("add " + mapper.getFilename() + " mapper");
-            mapValidation.addMapper(mapper.getInputStream());
+            entityValidation.addMapper(mapper.getInputStream());
         }
 
         if (validatorList.size() > 0) {
             for (Validator validator : validatorList) {
                 LOGGER.info("add " + validator.getName() + " validator");
-                mapValidation.setValidator(validator);
+                entityValidation.setValidator(validator);
             }
         }
 

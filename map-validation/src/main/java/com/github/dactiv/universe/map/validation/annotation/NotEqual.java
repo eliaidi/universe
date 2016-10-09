@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.dactiv.universe.map.validation.annotation;
 
 import java.lang.annotation.*;
 
 /**
- * Map 对象 校验注解
+ * 非等于验证
  *
  * @author maurice
  */
+@ValidField
 @Documented
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.TYPE})
-public @interface Valid {
+public @interface NotEqual {
 
     /**
-     * xml 文件映射名称
+     * 错误信息
      *
-     * @return 名称
+     * @return String
      */
-    String value() default "";
+    String message() default "";
+
+    /**
+     * 要对比的字段名
+     *
+     * @return String
+     */
+    String value();
 }

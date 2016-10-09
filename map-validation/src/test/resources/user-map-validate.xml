@@ -4,9 +4,9 @@
 
     <key name="username" alias="登录帐号">
         <required />
-        <re value="^[a-zA-z][a-zA-Z0-9_]{2,9}$"/>
-        <eq to="nickname" />
-        <neq to="password" />
+        <regularExpression value="^[a-zA-z][a-zA-Z0-9_]{2,9}$"/>
+        <equal value="nickname" />
+        <notEqual value="password" />
         <length min="6" max="16" />
     </key>
 

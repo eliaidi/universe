@@ -27,9 +27,9 @@ import java.util.Map;
  */
 public class EqualValidator extends AllowsNullValueValidator {
 
-    public static final String NAME = "eq";
+    public static final String NAME = "equal";
 
-    private static final String EQUAL_TO_ATTR = "to";
+    private static final String EQUAL_TO_ATTR = "value";
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {

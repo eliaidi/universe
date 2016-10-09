@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class NotEqualValidator extends EqualValidator {
 
-    public static final String NAME = "neq";
+    public static final String NAME = "notEqual";
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {

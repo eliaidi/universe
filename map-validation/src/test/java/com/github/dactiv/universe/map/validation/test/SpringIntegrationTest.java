@@ -33,12 +33,7 @@ import java.util.Map;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/applicationContext.xml")
 public class SpringIntegrationTest {
-    /*map.put("username","chenxiaobo");
-    map.put("password","123456");
-    map.put("nickname","chenxiaobo");
-    map.put("state","1");
-    map.put("email", "");
-    map.put("brithday", "2015-02-05");*/
+
     @Autowired
     private TestTest testTest;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.dactiv.universe.map.validation.mapping;
 
-import com.github.dactiv.universe.map.validation.MappingKey;
-import com.github.dactiv.universe.map.validation.MappingMetadata;
+import com.github.dactiv.universe.map.validation.ConstraintElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /**
- * 简单的 xml 映射元数据接口实现
+ * map 条件约束元素
  *
  * @author maurice
  */
-public class SimpleMappingMetadata implements MappingMetadata {
+public class MapConstraintElement implements ConstraintElement {
 
-    // 映射信息接口集合
-    private List<MappingKey> mappingKeys = new ArrayList<MappingKey>();
+    // map 集合
+    private Map<String, Object> map;
 
     /**
-     * 简单的 xml 映射元数据接口实现
+     * map 条件约束元素
      *
-     * @param mappingKeys key 映射信息接口集合
+     * @param map map 集合
      */
-    public SimpleMappingMetadata(List<MappingKey> mappingKeys) {
-        this.mappingKeys = mappingKeys;
+    public MapConstraintElement(Map<String, Object> map) {
+        this.map = map;
     }
 
     @Override
-    public List<MappingKey> getKeys() {
-        return mappingKeys;
+    public String attributeValue(String name) {
+        return map.get(name).toString();
+    }
+
+    @Override
+    public String attributeValue(String name, String defaultValue) {
+        String value = attributeValue(name);
+        return value == null ? defaultValue : value;
     }
 }

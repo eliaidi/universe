@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.github.dactiv.universe.map.validation.valid;
-
-import com.github.dactiv.universe.map.validation.Constraint;
-
-import java.util.Map;
+package com.github.dactiv.universe.map.validation;
 
 /**
- * 不能为null或""验证器
+ * 约束条件元素
  *
  * @author maurice
  */
-public class QequiredValidator extends ContainsKeyValidator{
+public interface ConstraintElement {
 
-    public static final String NAME = "required";
+    /**
+     * 获取属性值
+     *
+     * @param name 属性名称
+     *
+     * @return 值
+     */
+    String attributeValue(String name);
 
-    @Override
-    public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
-        return value != null && !"".equals(value);
-    }
+    /**
+     * 获取属性值
+     *
+     * @param name 属性名称
+     * @param defaultValue 如果找不到，默认值是什么
+     *
+     * @return 值
+     */
+    String attributeValue(String name,String defaultValue);
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
 }

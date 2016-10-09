@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.dactiv.universe.map.validation.mapping;
 
-import com.github.dactiv.universe.map.validation.MappingKey;
-import com.github.dactiv.universe.map.validation.MappingMetadata;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.github.dactiv.universe.map.validation.ConstraintElement;
+import org.dom4j.Element;
 
 /**
- * 简单的 xml 映射元数据接口实现
+ * Dom4j 形式的约束元素时间
  *
  * @author maurice
  */
-public class SimpleMappingMetadata implements MappingMetadata {
-
-    // 映射信息接口集合
-    private List<MappingKey> mappingKeys = new ArrayList<MappingKey>();
+public class Dom4jConstraintElement implements ConstraintElement {
+    // 元素接口
+    private Element element;
 
     /**
-     * 简单的 xml 映射元数据接口实现
+     * Dom4j 形式的约束元素时间
      *
-     * @param mappingKeys key 映射信息接口集合
+     * @param element 元素接口
      */
-    public SimpleMappingMetadata(List<MappingKey> mappingKeys) {
-        this.mappingKeys = mappingKeys;
+    public Dom4jConstraintElement(Element element) {
+        this.element = element;
     }
 
     @Override
-    public List<MappingKey> getKeys() {
-        return mappingKeys;
+    public String attributeValue(String name) {
+        return element.attributeValue(name);
+    }
+
+    @Override
+    public String attributeValue(String name, String defaultValue) {
+        return element.attributeValue(name, defaultValue);
     }
 }
