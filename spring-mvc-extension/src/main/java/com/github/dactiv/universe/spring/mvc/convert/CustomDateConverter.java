@@ -13,10 +13,12 @@ import java.util.Date;
  */
 public class CustomDateConverter implements Converter<String, Date> {
 
+    // 日期格式
     private String[] patterns = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "yyyy-MM", "HH:mm:ss", "yyyy年MM月dd日 HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月"};
 
-
-
+    /**
+     * 自定义日期转换器
+     */
     public CustomDateConverter() {
 
     }

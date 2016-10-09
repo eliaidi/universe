@@ -3,7 +3,8 @@
 <validate-mapper name="user">
 
     <key name="username" alias="登录帐号">
-        <notEmpty />
+        <required />
+        <re value="^[a-zA-z][a-zA-Z0-9_]{2,9}$"/>
         <eq to="nickname" />
         <neq to="password" />
         <length min="6" max="16" />
@@ -15,17 +16,17 @@
     </key>
 
     <key name="password" alias="登录密码">
-        <notEmpty />
+        <required />
         <length min="6" max="16" />
     </key>
 
     <key name="nickname" alias="昵称">
-        <notEmpty />
+        <required />
         <length max="16" />
     </key>
 
     <key name="state" alias="状态">
-        <notEmpty />
+        <required />
         <number />
         <max value="2"/>
         <min value="0" />
@@ -33,7 +34,7 @@
     </key>
 
     <key name="brithday" alias="出生年月">
-        <notEmpty />
+        <required />
         <date />
         <between min="2015-02-05" max="2015-02-06" />
     </key>

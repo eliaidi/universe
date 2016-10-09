@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.dactiv.universe.map.validation.valid;
 
 import com.github.dactiv.universe.map.validation.Constraint;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
- * 不能为null或""验证器
+ * 正则表达式验证
  *
  * @author maurice
  */
-public class NotEmptyValidator extends ContainsKeyValidator{
+public class RegularExpressionValidator extends AllowsNullValueValidator{
 
-    public static final String NAME = "notEmpty";
+    public static final String NAME = "re";
+
+    private static final String ATTR_NAME = "value";
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
-        return value != null && !"".equals(value);
+        String av = constraint.getElement().attributeValue(ATTR_NAME);
+
+        setMessage(constraint,av);
+
+        return Pattern.compile(av).matcher(value.toString()).matches();
     }
 
     @Override

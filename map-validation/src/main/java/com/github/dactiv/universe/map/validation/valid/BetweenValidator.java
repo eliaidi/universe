@@ -114,7 +114,7 @@ public class BetweenValidator extends AllowsNullValueValidator{
         Date maxDate = getDate(maxValue, cformat);
         Date minDate = getDate(minValue, cformat);
 
-        Date v = getDate(value.toString(), cformat);
+        Date v = Date.class.isAssignableFrom(value.getClass()) ? (Date) value : getDate(value.toString(), cformat);
 
         setMessage(constraint, FORMAT.format(minDate), FORMAT.format(maxDate));
 

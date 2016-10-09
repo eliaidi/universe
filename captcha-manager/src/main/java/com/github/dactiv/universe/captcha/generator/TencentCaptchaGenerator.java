@@ -37,8 +37,8 @@ import java.util.Random;
  */
 public class TencentCaptchaGenerator extends AbstractJpegImgCaptchaGenerator{
 
+    // 随机数
     private Random random = new Random();
-
 
     @Override
     public String generate(CaptchaToken token) throws CaptchaException {

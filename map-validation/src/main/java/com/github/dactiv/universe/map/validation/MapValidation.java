@@ -17,6 +17,7 @@
 package com.github.dactiv.universe.map.validation;
 
 import com.github.dactiv.universe.map.validation.exception.MappingMetadataNotFoundException;
+import com.github.dactiv.universe.map.validation.exception.ValidationException;
 import com.github.dactiv.universe.map.validation.mapping.SimpleConstraint;
 import com.github.dactiv.universe.map.validation.mapping.SimpleMappingKey;
 import com.github.dactiv.universe.map.validation.mapping.SimpleMappingMetadata;
@@ -58,7 +59,7 @@ public class MapValidation {
     private Map<String, MappingMetadata> mappingMetadataMap = new HashMap<String, MappingMetadata>();
     // 验证器 map
     private Map<String, Validator> validatorMap = new HashMap<String, Validator>();
-    // dom4j xml reader 用于读取xml
+    // dom4j xml reader 用于读取 xml
     private SAXReader reader = new SAXReader();
 
     /**
@@ -74,7 +75,7 @@ public class MapValidation {
      * 初始化验证器
      */
     private void initValidatorMap() {
-        validatorMap.put(NotEmptyValidator.NAME, new NotEmptyValidator());
+        validatorMap.put(QequiredValidator.NAME, new QequiredValidator());
         validatorMap.put(LengthValidator.NAME, new LengthValidator());
         validatorMap.put(NumberValidator.NAME, new NumberValidator());
         validatorMap.put(EmailValidator.NAME, new EmailValidator());
@@ -84,6 +85,7 @@ public class MapValidation {
         validatorMap.put(MinValidator.NAME, new MinValidator());
         validatorMap.put(EqualValidator.NAME, new EqualValidator());
         validatorMap.put(NotEqualValidator.NAME, new NotEqualValidator());
+        validatorMap.put(RegularExpressionValidator.NAME, new RegularExpressionValidator());
     }
 
     /**
@@ -181,14 +183,14 @@ public class MapValidation {
         List<ValidError> validateErrors = new ArrayList<ValidError>();
 
         if (!mappingMetadataMap.containsKey(mapperName)) {
-            throw new MappingMetadataNotFoundException("找不到[" + mapperName + "]的映射文件");
+            throw new MappingMetadataNotFoundException("[" + mapperName + "] mapper file not found.");
         }
 
         MappingMetadata validateMapper = mappingMetadataMap.get(mapperName);
 
-        List<MappingKey> mappeingKeys = validateMapper.getKeys();
+        List<MappingKey> mappingKeys = validateMapper.getKeys();
 
-        for (MappingKey mappingKey : mappeingKeys) {
+        for (MappingKey mappingKey : mappingKeys) {
 
             List<Constraint> constraints = mappingKey.getConstraints();
 
@@ -197,7 +199,7 @@ public class MapValidation {
                 String constraintName = constraint.getName();
 
                 if (!validatorMap.containsKey(constraintName)) {
-                    throw new ValidatorNotFoundException("找不到[" + constraintName + "]验证器");
+                    throw new ValidatorNotFoundException("[" + constraintName + "] validator not found.");
                 }
 
                 if (!validatorMap.get(constraintName).valid(mappingKey.getName(), map, constraint)) {

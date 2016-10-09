@@ -56,5 +56,14 @@ public abstract class ContainsKeyValidator implements Validator {
         return valid(source.get(key), source, constraint);
     }
 
+    /**
+     * 验证方法
+     *
+     * @param value 值
+     * @param source 数据源
+     * @param constraint 条件对象
+     *
+     * @return 成功返回 true, 否则 false
+     */
     public abstract boolean valid(Object value, Map<String, Object> source, Constraint constraint);
 }

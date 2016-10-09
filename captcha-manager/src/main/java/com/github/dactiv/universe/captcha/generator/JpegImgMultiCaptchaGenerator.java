@@ -25,21 +25,30 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * jpeg图片的验证码生成器
+ * jpeg 图片的验证码生成器
  *
  * @author maurice
  *
  */
 public class JpegImgMultiCaptchaGenerator implements CaptchaGenerator {
 
+    // 验证码生成器集合
     private List<CaptchaGenerator> generatorList = new ArrayList<>();
-
+    // 随机数
     private Random random = new Random();
 
+    /**
+     * jpeg 图片的验证码生成器
+     */
     public JpegImgMultiCaptchaGenerator() {
         generatorList.add(new TencentCaptchaGenerator());
     }
 
+    /**
+     * jpeg 图片的验证码生成器
+     *
+     * @param generatorList 验证码生成器集合
+     */
     public JpegImgMultiCaptchaGenerator(java.util.List<CaptchaGenerator> generatorList) {
         this.generatorList = generatorList;
     }

@@ -42,7 +42,13 @@ public class AuthCoder {
      * 默认的字符串编码
      */
     public final static String DEFAULT_VALUE_ENCODING = "UTF-8";
+    /**
+     * 默认参数分隔符
+     */
     public final static String DEFAULT_SPLIT_STRING = "&";
+    /**
+     * 默认左右值分隔符
+     */
     public final static String DEFAULT_LEFT_RIGHT_SPLIT_STRING = "=";
     /**
      * 默认加密后的解密超时时间

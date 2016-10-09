@@ -156,7 +156,7 @@ public abstract class AbstractCaptchaManager implements CaptchaManager {
             }
 
             delete(id);
-            validResult = new ValidResultSupport(new Date(), "验证成功", Boolean.TRUE);
+            validResult = new ValidResultSupport(new Date(), "success", Boolean.TRUE);
         } catch (Exception e) {
             delete(id);
             validResult = new ValidResultSupport(new Date(), e.getMessage(), Boolean.FALSE);

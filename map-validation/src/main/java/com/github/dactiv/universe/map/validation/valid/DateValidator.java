@@ -19,6 +19,7 @@ package com.github.dactiv.universe.map.validation.valid;
 import com.github.dactiv.universe.map.validation.Constraint;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -44,6 +45,11 @@ public class DateValidator extends AllowsNullValueValidator{
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
+
+        if (Date.class.isAssignableFrom(value.getClass())) {
+            return true;
+        }
+
         String cel = constraint.getElement().attributeValue(EL_ATTR_NAME);
 
         if (cel != null && !"".equals(cel) && Pattern.compile(cel).matcher(value.toString()).matches()) {

@@ -19,14 +19,19 @@ package com.github.dactiv.universe.map.validation.spring.aop;
 import com.github.dactiv.universe.map.validation.ValidError;
 import com.github.dactiv.universe.map.validation.annotation.Valid;
 import com.github.dactiv.universe.map.validation.MapValidation;
+import com.github.dactiv.universe.map.validation.exception.ValidationException;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,12 +84,49 @@ public class MapValidationSourceAdvisor extends StaticMethodMatcherPointcutAdvis
 
             Object o = args[i];
 
-            // 如果参数里存在 Valid 注解并且该参数是 Map 的子类，就进行校验
-            if (valid != null && o != null && Map.class.isAssignableFrom(o.getClass())) {
-                valid((Map<String, Object>) o, valid.value());
+            if (o == null) {
+                return ;
+            }
+
+            // 如果参数里存在 Valid 注解就进行校验
+            if (valid != null) {
+                if (Map.class.isAssignableFrom(o.getClass())) {
+                    valid((Map<String, Object>) o, valid.value());
+                } else {
+                    Map<String, Object> entity = convertObject2Map(o);
+                    valid(entity, valid.value());
+                }
             }
 
         }
+    }
+
+    /**
+     * 将实转换成 map
+     *
+     * @param o 实体对象
+     *
+     * @return 转换后的 map
+     */
+    private Map<String, Object> convertObject2Map(Object o) throws IllegalAccessException, NoSuchMethodException {
+        Map<String, Object> entity = new LinkedHashMap<String, Object>();
+        Class<?> targetClass = o.getClass();
+        while(targetClass != null) {
+            Field[] fields = targetClass.getDeclaredFields();
+            for (Field f : fields) {
+                Object value;
+                Method method = targetClass.getDeclaredMethod("get" + StringUtils.capitalize(f.getName()));
+                if (method != null) {
+                    value = ReflectionUtils.invokeMethod(method, o);
+                } else {
+                    value = ReflectionUtils.getField(f, o);
+                }
+
+                entity.put(f.getName(), value);
+            }
+            targetClass = targetClass.getSuperclass();
+        }
+        return entity;
     }
 
     /**

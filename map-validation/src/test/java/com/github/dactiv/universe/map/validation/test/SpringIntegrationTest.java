@@ -23,6 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,14 +33,30 @@ import java.util.Map;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/applicationContext.xml")
 public class SpringIntegrationTest {
-
+    /*map.put("username","chenxiaobo");
+    map.put("password","123456");
+    map.put("nickname","chenxiaobo");
+    map.put("state","1");
+    map.put("email", "");
+    map.put("brithday", "2015-02-05");*/
     @Autowired
     private TestTest testTest;
 
     @Test(expected = UndeclaredThrowableException.class)
     public void testValidate() {
         Map<String, Object> map = new HashMap<String, Object>();
-        testTest.saveUser(map);
+        //testTest.saveUser(map);
+        testTest.saveUser((User)null);
+        User user = new User();
+        //testTest.saveUser(user);
+
+        user.setUsername("chenxiaobo");
+        user.setPassword("123456");
+        user.setNickname("chenxiaobo");
+        user.setState(1);
+        user.setBrithday(new Date());
+
+        testTest.saveUser(user);
     }
 
 }

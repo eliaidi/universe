@@ -81,7 +81,7 @@ public class SsoClientFilter extends AuthenticatingFilter {
                                      ServletResponse response) {
 
         if (LOGGER.isWarnEnabled()) {
-            LOGGER.warn("sso 认证失败", e);
+            LOGGER.warn("sso authentication exception:", e);
         }
 
         try {

@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package com.github.dactiv.universe.map.validation.test;
+package com.github.dactiv.universe.map.validation.valid;
 
-import com.github.dactiv.universe.map.validation.annotation.Valid;
-import org.springframework.stereotype.Service;
+import com.github.dactiv.universe.map.validation.Constraint;
 
 import java.util.Map;
 
 /**
+ * 不能为null或""验证器
+ *
  * @author maurice
  */
-@Service
-public class TestTest {
+public class QequiredValidator extends ContainsKeyValidator{
 
-    public void saveUser(@Valid("user") Map<String, Object> user) {
-        System.out.println(user);
+    public static final String NAME = "required";
+
+    @Override
+    public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
+        return value != null && !"".equals(value);
     }
 
-    public void saveUser(@Valid("user") User user) {
-        System.out.println(user);
+    @Override
+    public String getName() {
+        return NAME;
     }
 }
