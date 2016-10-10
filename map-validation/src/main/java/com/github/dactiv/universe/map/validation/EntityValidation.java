@@ -18,14 +18,16 @@ package com.github.dactiv.universe.map.validation;
 import com.github.dactiv.universe.map.validation.annotation.Alias;
 import com.github.dactiv.universe.map.validation.annotation.Valid;
 import com.github.dactiv.universe.map.validation.annotation.ValidField;
-import com.github.dactiv.universe.map.validation.mapping.*;
+import com.github.dactiv.universe.map.validation.mapping.MapConstraintElement;
+import com.github.dactiv.universe.map.validation.mapping.SimpleConstraint;
+import com.github.dactiv.universe.map.validation.mapping.SimpleMappingKey;
+import com.github.dactiv.universe.map.validation.mapping.SimpleMappingMetadata;
 import com.github.dactiv.universe.map.validation.valid.error.SimpleValidError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -172,6 +174,14 @@ public class EntityValidation extends MapValidation {
         return entity;
     }
 
+    /**
+     * 将字符首字母转换大小写
+     *
+     * @param str 字符值
+     * @param capitalize true 为转换大写，否则 false
+     *
+     * @return 新的字符值
+     */
     private static String changeFirstCharacterCase(String str, boolean capitalize) {
         if (str == null || str.length() == 0) {
             return str;
@@ -280,6 +290,15 @@ public class EntityValidation extends MapValidation {
         return "";
     }
 
+    /**
+     * 执行方法
+     *
+     * @param name 方法名
+     * @param o 要执行方法的对象
+     * @param args 方法参数
+     *
+     * @return 执行结果
+     */
     private Object invokeMethod(String name, Object o, Object... args) {
         try {
             if (Annotation.class.isAssignableFrom(o.getClass())) {

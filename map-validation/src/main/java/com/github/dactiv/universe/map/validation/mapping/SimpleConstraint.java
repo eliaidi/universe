@@ -63,7 +63,7 @@ public class SimpleConstraint implements Constraint {
 
     @Override
     public String getErrorMessage() {
-        return message == null ? this.defaultMessage : message;
+        return message == null || "".equals(message) ? this.defaultMessage : message;
     }
 
     @Override

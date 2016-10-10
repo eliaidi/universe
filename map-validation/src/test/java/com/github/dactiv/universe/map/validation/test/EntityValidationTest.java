@@ -49,9 +49,10 @@ public class EntityValidationTest {
         user.setPassword("123456");
         user.setNickname("chenxiaobo");
         user.setState(1);
-        user.setBrithday(new Date("2015-02-05"));
+        user.setBrithday(new Date());
 
-        entityValidation.valid(user);
+        validErrorList = entityValidation.valid(user);
+        Assert.assertEquals(validErrorList.size(), 0);
 
         Map<String, Object> map = new HashMap<String, Object>();
         validErrorList = entityValidation.valid(map,"user");
@@ -77,7 +78,7 @@ public class EntityValidationTest {
 
         map.put("username","1234567891011121314151617181920");
         validErrorList = entityValidation.valid(map,"user");
-        Assert.assertEquals(validErrorList.size(), 2);
+        Assert.assertEquals(validErrorList.size(), 3);
 
         map.put("username","123456");
         validErrorList = entityValidation.valid(map,"user");
