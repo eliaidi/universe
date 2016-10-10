@@ -174,11 +174,11 @@ public class EntityValidationTest {
 
         map.put("username","1234567891011121314151617181920");
         validErrorList = entityValidation.valid(map,"user");
-        Assert.assertEquals(validErrorList.size(), 2);
+        Assert.assertEquals(validErrorList.size(), 3);
 
         map.put("username","123456");
         validErrorList = entityValidation.valid(map,"user");
-        Assert.assertEquals(validErrorList.size(), 2);
+        Assert.assertEquals(validErrorList.size(), 3);
 
         map.put("username","chenxiaobo");
         validErrorList = entityValidation.valid(map,"user");
