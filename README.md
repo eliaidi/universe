@@ -4,13 +4,13 @@ universe 是对常用的 java 框架进行多一层的封装，来提高使用�
 
 ## map-validtion
 
-map-validtion 是对 Map 对象的一个验证器，主要的作用是验证 Map 的数据有效性。
+map-validtion 是对 Map 对象和实体对象的一个验证器，主要的作用是验证 Map 和实体对象的数据有效性。
 
 maven:
 
     <dependency>
       <groupId>com.github.dactiv.universe</groupId>
-      <artifactId>map-validation</artifactId>
+      <artifactId>entity-validation</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
 

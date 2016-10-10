@@ -10,10 +10,10 @@
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>map-validation</artifactId>
+    <artifactId>entity-validation</artifactId>
     <packaging>jar</packaging>
-    <name>map-validation</name>
-    <description>a map object validation framework</description>
+    <name>entity-validation</name>
+    <description>a entity object validation framework</description>
     <url>https://github.com/dactiv/universe</url>
 
     <dependencies>
