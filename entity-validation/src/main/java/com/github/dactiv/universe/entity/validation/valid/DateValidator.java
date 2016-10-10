@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  *
  * @author maurice
  */
-public class DateValidator extends AllowsNullValueValidator{
+public class DateValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "date";
     private static final String REGULAR_EXPRESSION_ATTR_NAME = "reg";

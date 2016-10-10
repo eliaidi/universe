@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  *
  * @author maurice
  */
-public class RegularExpressionValidator extends AllowsNullValueValidator{
+public class RegularExpressionValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "regularExpression";
 

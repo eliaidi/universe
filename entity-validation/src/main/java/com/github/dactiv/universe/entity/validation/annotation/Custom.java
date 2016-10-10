@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.dactiv.universe.entity.validation.annotation;
 
-package com.github.dactiv.universe.entity.validation.valid;
-
-import com.github.dactiv.universe.entity.validation.Constraint;
-
-import java.util.Map;
+import java.lang.annotation.*;
 
 /**
- * 允许空值验证器
- *
+ * 不允许 "" 或 null 值的自定义验证
  * @author maurice
  */
-public abstract class AllowsNullValueValidator extends ContainsKeyValidator {
-
-    @Override
-    public boolean valid(String key, Map<String, Object> source, Constraint constraint) {
-
-        return !source.containsKey(key) ||
-                source.get(key) == null ||
-                "".equals(source.get(key)) ||
-                valid(source.get(key), source, constraint);
-    }
-
+@ValidField
+@Documented
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Custom {
+    /**
+     * 验证器名称
+     *
+     * @return String
+     */
+    String value();
 }

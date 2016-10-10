@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  *
  * @author maurice
  */
-public class NumberValidator extends AllowsNullValueValidator {
+public class NumberValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "number";
 

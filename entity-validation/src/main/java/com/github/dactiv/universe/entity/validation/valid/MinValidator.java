@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author maurice
  */
-public class MinValidator extends AllowsNullValueValidator {
+public class MinValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "min";
 

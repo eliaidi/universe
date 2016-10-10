@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  *
  * @author maurice
  */
-public class BetweenValidator extends AllowsNullValueValidator{
+public class BetweenValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "between";
 

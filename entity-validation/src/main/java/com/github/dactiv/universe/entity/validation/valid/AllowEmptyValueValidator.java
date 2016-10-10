@@ -21,35 +21,19 @@ import com.github.dactiv.universe.entity.validation.Constraint;
 import java.util.Map;
 
 /**
- * 最大值验证器
+ * 允许空值验证器
  *
  * @author maurice
  */
-public class MaxValidator extends AllowEmptyValueValidator {
-
-    public static final String NAME = "max";
-
-    private static final String ATTR_NAME = "value";
+public abstract class AllowEmptyValueValidator extends ContainsKeyValidator {
 
     @Override
-    public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
-        String av = constraint.getElement().attributeValue(ATTR_NAME);
+    public boolean valid(String key, Map<String, Object> source, Constraint constraint) {
 
-        setMessage(constraint,av);
-
-        try {
-            Double v = new Double(value.toString());
-            Double e = new Double(av);
-
-            return v <= e;
-        } catch (Exception e) {
-            return Boolean.FALSE;
-        }
-
+        return !source.containsKey(key) ||
+                source.get(key) == null ||
+                "".equals(source.get(key)) ||
+                valid(source.get(key), source, constraint);
     }
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
 }

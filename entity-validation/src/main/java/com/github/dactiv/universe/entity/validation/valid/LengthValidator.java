@@ -26,7 +26,7 @@ import java.util.Map;
  *
  * @author maurice
  */
-public class LengthValidator extends AllowsNullValueValidator {
+public class LengthValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "length";
     public static final String MAX_ATTR_NAME = "max";

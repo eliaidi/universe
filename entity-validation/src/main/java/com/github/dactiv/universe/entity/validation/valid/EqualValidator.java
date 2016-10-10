@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @author maurice
  */
-public class EqualValidator extends AllowsNullValueValidator {
+public class EqualValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "equal";
 

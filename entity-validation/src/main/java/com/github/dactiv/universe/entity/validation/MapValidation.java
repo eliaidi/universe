@@ -89,6 +89,8 @@ public class MapValidation {
         validatorMap.put(EqualValidator.NAME, new EqualValidator());
         validatorMap.put(NotEqualValidator.NAME, new NotEqualValidator());
         validatorMap.put(RegularExpressionValidator.NAME, new RegularExpressionValidator());
+        validatorMap.put(EmptyValueCustomValidator.NAME, new EmptyValueCustomValidator());
+        validatorMap.put(CustomValidator.NAME, new CustomValidator());
     }
 
     /**
@@ -99,6 +101,30 @@ public class MapValidation {
     public void setValidator(List<Validator> validator) {
         for (Validator v : validator) {
             setValidator(v);
+        }
+    }
+
+    /**
+     * 设置允许 null 或 "" 值的自定义验证器
+     *
+     * @param validator 自定义验证器集合
+     */
+    public void setEmptyValueCustomValidator(List<ContainsKeyValidator> validator) {
+        EmptyValueCustomValidator vm = (EmptyValueCustomValidator)validatorMap.get(EmptyValueCustomValidator.NAME);
+        for (ContainsKeyValidator v : validator) {
+            vm.getCustomValidatorMap().put(v.getName(), v);
+        }
+    }
+
+    /**
+     * 设置非允许 null 或 "" 值的自定义验证器
+     *
+     * @param validator 自定义验证器集合
+     */
+    public void setCustomValidator(List<ContainsKeyValidator> validator) {
+        CustomValidator vm = (CustomValidator)validatorMap.get(EmptyValueCustomValidator.NAME);
+        for (ContainsKeyValidator v : validator) {
+            vm.getCustomValidatorMap().put(v.getName(), v);
         }
     }
 

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  *
  * @author maurice
  */
-public class EmailValidator extends AllowsNullValueValidator {
+public class EmailValidator extends AllowEmptyValueValidator {
 
     public static final String NAME = "email";
 
