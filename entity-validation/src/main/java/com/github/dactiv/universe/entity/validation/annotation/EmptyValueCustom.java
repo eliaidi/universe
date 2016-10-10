@@ -27,6 +27,12 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EmptyValueCustom {
+    /**
+     * 错误信息
+     *
+     * @return String
+     */
+    String message() default "";
 
     /**
      * 验证器名称

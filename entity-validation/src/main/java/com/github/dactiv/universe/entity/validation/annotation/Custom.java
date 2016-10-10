@@ -27,6 +27,13 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Custom {
     /**
+     * 错误信息
+     *
+     * @return String
+     */
+    String message() default "";
+
+    /**
      * 验证器名称
      *
      * @return String
