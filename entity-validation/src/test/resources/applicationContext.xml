@@ -15,11 +15,11 @@
     <!-- 使用 annotation 自动注册 bean,并保证 @Required, @Autowired 的属性被注入 -->
     <context:component-scan base-package="com.github.dactiv.universe.map" />
 
-    <bean id="mapValidationBeanFactory" class="com.github.dactiv.universe.map.validation.spring.MapValidationBeanFactory">
+    <bean id="mapValidationBeanFactory" class="com.github.dactiv.universe.entity.validation.spring.MapValidationBeanFactory">
         <property name="mapperLocations" value="classpath*:user-map-validate.xml" />
     </bean>
 
-    <bean id="mapValidAdvisor" class="com.github.dactiv.universe.map.validation.spring.aop.MapValidationSourceAdvisor">
+    <bean id="mapValidAdvisor" class="com.github.dactiv.universe.entity.validation.spring.aop.MapValidationSourceAdvisor">
         <property name="entityValidation" ref="mapValidationBeanFactory" />
     </bean>
 
