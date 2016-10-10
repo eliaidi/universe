@@ -64,7 +64,7 @@ public class EntityValidation extends MapValidation {
         }
 
         if (Map.class.isAssignableFrom(entity.getClass())) {
-            valid((Map<String, Object>)entity, mapperName);
+            validErrors = valid((Map<String, Object>)entity, mapperName);
         } else if (mapperName == null || "".equals(mapperName)) {
             validErrors = valid(entity);
         } else {
@@ -101,8 +101,8 @@ public class EntityValidation extends MapValidation {
         Valid valid = getAnnotation(entity.getClass(), Valid.class);
 
         if (valid == null) {
-            if (LOGGER.isWarnEnabled()) {
-                LOGGER.warn("not valid entity");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("not valid entity");
             }
             return validErrors;
         }
@@ -258,7 +258,7 @@ public class EntityValidation extends MapValidation {
      *
      * @return 找到返回注解实例否则返回 null
      */
-    private <A extends Annotation> A getAnnotation(Class<?> entityClass, Class<A> annotationClass) {
+    public <A extends Annotation> A getAnnotation(Class<?> entityClass, Class<A> annotationClass) {
 
         do {
             A valid = entityClass.getAnnotation(annotationClass);

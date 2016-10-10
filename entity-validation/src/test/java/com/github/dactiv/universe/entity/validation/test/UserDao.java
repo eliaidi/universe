@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 dactiv
+ * Copyright 2016 dactiv
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.github.dactiv.universe.entity.validation.test;
 
 import com.github.dactiv.universe.entity.validation.annotation.Valid;
@@ -25,13 +24,16 @@ import java.util.Map;
  * @author maurice
  */
 @Service
-public class TestTest {
-
+public class UserDao {
     public void saveUser(@Valid("user") Map<String, Object> user) {
         System.out.println(user);
     }
 
     public void saveUser(@Valid("user") User user) {
+        System.out.println(user);
+    }
+
+    public void saveNotAnnUser(User user) {
         System.out.println(user);
     }
 }

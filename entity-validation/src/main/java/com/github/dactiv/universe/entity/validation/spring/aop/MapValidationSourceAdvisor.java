@@ -17,12 +17,19 @@
 package com.github.dactiv.universe.entity.validation.spring.aop;
 
 import com.github.dactiv.universe.entity.validation.EntityValidation;
+import com.github.dactiv.universe.entity.validation.ValidError;
 import com.github.dactiv.universe.entity.validation.annotation.Valid;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 使用 AOP 针对方法带有 Valid 注解参数的方法进行Map验证的 Advisor
@@ -44,6 +51,19 @@ public class MapValidationSourceAdvisor extends StaticMethodMatcherPointcutAdvis
     @Override
     public boolean matches(Method method, Class<?> targetClass) {
         Annotation[][] annotations = method.getParameterAnnotations();
+
+        Class<?>[] classes = method.getParameterTypes();
+
+        if (classes.length == 0) {
+            return Boolean.FALSE;
+        }
+
+        for (Class<?> c : classes) {
+            Valid valid = entityValidation.getAnnotation(c, Valid.class);
+            if (valid != null) {
+                return Boolean.TRUE;
+            }
+        }
 
         if (annotations.length == 0) {
             return Boolean.FALSE;
@@ -76,12 +96,25 @@ public class MapValidationSourceAdvisor extends StaticMethodMatcherPointcutAdvis
             if (o == null) {
                 return ;
             }
-
+            List<ValidError> errorList;
             // 如果参数里存在 Valid 注解就进行校验
             if (valid != null) {
-                entityValidation.valid(o, valid.value());
+                errorList = entityValidation.valid(o, valid.value());
             } else {
-                entityValidation.valid(o);
+                errorList = entityValidation.valid(o);
+            }
+
+            if (errorList.size() > 0) {
+
+                String objectName = valid == null || "".equals(valid.value()) ? o.getClass().getName() :  valid.value();
+
+                BeanPropertyBindingResult propertyBindingResult = new BeanPropertyBindingResult(o, objectName);
+
+                for (ValidError ve : errorList) {
+                    propertyBindingResult.addError(new ObjectError(ve.getName(), ve.getMessage()));
+                }
+
+                throw new BindException(propertyBindingResult);
             }
 
         }

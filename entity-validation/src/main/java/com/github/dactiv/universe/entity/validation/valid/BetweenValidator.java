@@ -39,32 +39,35 @@ public class BetweenValidator extends AllowsNullValueValidator{
     private static final String MAX_ATTR_NAME = "max";
     private static final String MIN_ATTR_NAME = "min";
     private static final String FORMAT_ATTR_NAME = "format";
-    private static final String REGULAR_EXPRESSION_ATTR_NAME = "el";
-    private static final String MIN_DEFAULT_VALUE = "0.0";
+    private static final String REGULAR_EXPRESSION_ATTR_NAME = "reg";
+    private static final String MIN_NUMBER_DEFAULT_VALUE = "0.0";
+    private static final String MIN_DATE_DEFAULT_VALUE = "1970-01-01 00:00:00";
 
     public static final SimpleDateFormat FORMAT = new SimpleDateFormat();
 
     private List<String> dateRegularExpressionList = new ArrayList<String>();
     private List<String> dateFormatList = new ArrayList<String>();
-
     /**
      * 范围值验证器
      */
     public BetweenValidator() {
         dateRegularExpressionList.add("[0-9]{4}-[0-9]{2}-[0-9]{2}");
-
         dateFormatList.add("yyyy-MM-dd");
+        dateFormatList.add("yyyy-MM-dd HH:mm:ss");
+        dateFormatList.add("yyyy-MM");
+        dateFormatList.add("HH:mm:ss");
     }
 
     @Override
     public boolean valid(Object value, Map<String, Object> source, Constraint constraint) {
         String maxValue = constraint.getElement().attributeValue(MAX_ATTR_NAME);
-        String minValue = constraint.getElement().attributeValue(MIN_ATTR_NAME, MIN_DEFAULT_VALUE);
 
-        if (isDateValue(value.toString(), constraint)) {
+        if (Date.class.isAssignableFrom(value.getClass()) || isDateValue(value.toString(), constraint)) {
+            String minValue = constraint.getElement().attributeValue(MIN_ATTR_NAME, MIN_DATE_DEFAULT_VALUE);
             return validDateValue(value, constraint, maxValue, minValue);
         }
 
+        String minValue = constraint.getElement().attributeValue(MIN_ATTR_NAME, MIN_NUMBER_DEFAULT_VALUE);
         return validNumberValue(value, constraint, maxValue, minValue);
     }
 

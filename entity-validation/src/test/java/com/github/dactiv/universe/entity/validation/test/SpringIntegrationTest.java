@@ -35,23 +35,24 @@ import java.util.Map;
 public class SpringIntegrationTest {
 
     @Autowired
-    private TestTest testTest;
+    private UserDao userDao;
 
     @Test(expected = UndeclaredThrowableException.class)
-    public void testValidate() {
+    public void testValidateMap() {
         Map<String, Object> map = new HashMap<String, Object>();
-        //testTest.saveUser(map);
-        testTest.saveUser((User)null);
+        userDao.saveUser(map);
+    }
+
+    @Test(expected = UndeclaredThrowableException.class)
+    public void testValidateEntity() {
         User user = new User();
-        //testTest.saveUser(user);
+        userDao.saveUser(user);
+    }
 
-        user.setUsername("chenxiaobo");
-        user.setPassword("123456");
-        user.setNickname("chenxiaobo");
-        user.setState(1);
-        user.setBrithday(new Date());
-
-        testTest.saveUser(user);
+    @Test(expected = UndeclaredThrowableException.class)
+    public void testValidateNotAnnEntity() {
+        User user = new User();
+        userDao.saveNotAnnUser(user);
     }
 
 }

@@ -17,6 +17,7 @@ package com.github.dactiv.universe.entity.validation.mapping;
 
 import com.github.dactiv.universe.entity.validation.ConstraintElement;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ import java.util.Map;
 public class MapConstraintElement implements ConstraintElement {
 
     // map 集合
-    private Map<String, Object> map;
+    private Map<String, Object> map = new HashMap<>();
 
     /**
      * map 条件约束元素

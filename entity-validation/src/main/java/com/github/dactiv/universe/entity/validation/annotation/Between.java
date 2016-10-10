@@ -48,4 +48,18 @@ public @interface Between {
      * @return String
      */
     String min();
+
+    /**
+     * 自定义验证正则表达式校验值的类型
+     *
+     * @return String
+     */
+    String reg() default "";
+
+    /**
+     * 时间格式
+     *
+     * @return String
+     */
+    String format() default "";
 }
