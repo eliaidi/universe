@@ -39,6 +39,7 @@ import java.util.Map;
  * 
  * @author maurice
  */
+@SuppressWarnings("unchecked")
 public class EntityValidation extends MapValidation {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(MapValidation.class);
@@ -48,6 +49,16 @@ public class EntityValidation extends MapValidation {
     // 是否忽略 null 对象
     private boolean ignoreNullObject = true;
 
+    /**
+     * 检查实体是否满足验证
+     *
+     * @param entity 实体
+     *
+     * @return true 为是，否则 false
+     */
+    private boolean checkedEntity(Object entity) {
+        return entity == null && ignoreNullObject;
+    }
     /**
      * 验证对象
      *
@@ -59,7 +70,7 @@ public class EntityValidation extends MapValidation {
     public List<ValidError> valid(Object entity, String mapperName) {
         List<ValidError> validErrors = new ArrayList<ValidError>();
 
-        if (entity == null && ignoreNullObject){
+        if (checkedEntity(entity)){
             return validErrors;
         }
 
@@ -94,7 +105,7 @@ public class EntityValidation extends MapValidation {
     public List<ValidError> valid(Object entity){
         List<ValidError> validErrors = new ArrayList<ValidError>();
 
-        if (entity == null && ignoreNullObject){
+        if (checkedEntity(entity)){
             return validErrors;
         }
 
@@ -202,7 +213,7 @@ public class EntityValidation extends MapValidation {
      *
      * @param entityClass  实体类 class
      */
-    public void addClass(Class<?> entityClass) {
+    private void addClass(Class<?> entityClass) {
 
         Valid valid = getAnnotation(entityClass, Valid.class);
 
